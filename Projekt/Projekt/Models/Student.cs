@@ -1,4 +1,6 @@
-﻿namespace Projekt.Models
+﻿using Projekt.Utilities;
+
+namespace Projekt.Models
 {
     public class Student : Person
     {
@@ -6,14 +8,14 @@
         {
             Class1a = 0,
             Class1b = 1,
-            Class2a = 1,
-            Class2b = 2,
-            Class3a = 2,
-            Class3b = 3,
-            Class4a = 3,
-            Class4b = 4,
-            Class5a = 4,
-            Class5b = 5,
+            Class2a = 2,
+            Class2b = 3,
+            Class3a = 4,
+            Class3b = 5,
+            Class4a = 6,
+            Class4b = 7,
+            Class5a = 8,
+            Class5b = 9,
         }
         public enum Tracks
         {
@@ -26,22 +28,25 @@
             MD = 6,
             MP = 7,
         }
-        private Schoolclasses _Schoolclass;
-        public Schoolclasses Schoolclass { get { return _Schoolclass; } }
-        private Tracks _Track;
-        public Tracks Track { get { return _Track; } }
+        public Schoolclasses Schoolclass { get; private set; }
+        public Tracks Track {  get; private set; }
         public Student(string firstName, string lastName, DateTime birthdate, Genders gender, Schoolclasses schoolclass, Tracks track) : base(firstName, lastName, birthdate, gender) 
         {
-            _Schoolclass = schoolclass;
-            _Track = track;
+            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Schoolclass = schoolclass;
+            Validator.ValidateEnumValue(track, nameof(track));
+            Track = track;
         }
         public void ChangeSchoolclass(Schoolclasses schoolclass)
         {
-           _Schoolclass = schoolclass;
+            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Schoolclass = schoolclass;
         }
         public void ChangeTrack(Tracks track)
         {
-            _Track = track;
+            Validator.ValidateEnumValue(track, nameof(track));
+            Track = track;
         }
+
     }
 }

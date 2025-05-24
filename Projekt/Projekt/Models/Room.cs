@@ -1,28 +1,31 @@
-﻿namespace Projekt.Models
+﻿using Projekt.Utilities;
+
+namespace Projekt.Models
 {
     public class Room
     {
         public int ID { get; set; }
-        private string _Name;
-        public string Name { get { return _Name; } }
-        private int _Size;
-        public int Size { get { return _Size; } }
+        public string Name { get; private set; }
+        public int Size { get; private set; }
         public Room(string name, int size)
         {
-            _Name = name;
-            _Size = size;
+            Validator.ValidateString(name, nameof(name));
+            Name = name;
+            Size = size;
         }
         public void ChangeName(string name)
         {
-            _Name = name;
+            Validator.ValidateString(name, nameof(name));
+            Name = name;
         }
         public void ChangeSize(int size)
         {
-            if (size > 0)
-            {
-                _Size = size;
-            }
-            else
+            ValidateSize(size);
+            Size = size;
+        }
+        private void ValidateSize(int size)
+        {
+            if (size < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(size), "Room size must be positive.");
             }

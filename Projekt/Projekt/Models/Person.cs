@@ -1,57 +1,56 @@
-﻿namespace Projekt.Models
+﻿using Projekt.Utilities;
+namespace Projekt.Models
 {
     public class Person
     {
         public int ID;
-        private string _FirstName;
-        public string FirstName { get { return _FirstName;  } }
-        private string _LastName;
-        public string LastName { get { return _LastName; } }
-        private DateTime _Birthdate;
-        public int Age { get { return DateTime.Now.Year - _Birthdate.Year; } }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public DateTime Birthdate { get; private set; }
+        public int Age { get { return DateTime.Now.Year - Birthdate.Year; } }
         public enum Genders
         {
             m = 0,
             w = 1,
             d = 2
         }
-        private Genders _Gender;
-        public Genders Gender { get { return _Gender; } }
-        public Person (string firstName, string lastName, DateTime birthdate, Genders gender)
+        public Genders Gender { get; private set; }
+        public Person(string firstName, string lastName, DateTime birthdate, Genders gender)
         {
-            _FirstName = firstName;
-            _LastName = lastName;
-            if (ValidBirthdate(birthdate)) { _Birthdate = birthdate; }
-            _Gender = gender;
+            Validator.ValidateString(firstName, nameof(firstName));
+            FirstName = firstName;
+            Validator.ValidateString(lastName, nameof(lastName));
+            LastName = lastName;
+            ValidateBirthdate(birthdate);
+            Birthdate = birthdate;
+            Validator.ValidateEnumValue(gender, nameof(gender));
+            Gender = gender;
         }
         public void ChangeFirstName(string firstName)
         {
-            _FirstName = firstName;
+            Validator.ValidateString(firstName, nameof(firstName));
+            FirstName = firstName;
         }
         public void ChangeLastName(string lastName)
         {
-            _LastName = lastName;
+            Validator.ValidateString(lastName, nameof(lastName));
+            LastName = lastName;
         }
         public void ChangeBirthdate(DateTime birthdate)
         {
-            if (ValidBirthdate(birthdate))
-            {
-                _Birthdate = birthdate;
-            }
+            ValidateBirthdate(birthdate);
+            Birthdate = birthdate;
         }
         public void ChangeGender(Genders gender)
         {
-            _Gender = gender;
+            Validator.ValidateEnumValue(gender, nameof(gender));
+            Gender = gender;
         }
-        private bool ValidBirthdate(DateTime birthdate)
+        private void ValidateBirthdate(DateTime birthdate)
         {
             if (birthdate > DateTime.Now)
             {
-                throw new ArgumentOutOfRangeException(nameof(birthdate), "Birthdate must be in the past.");
-            }
-            else
-            {
-                return true;
+                throw new ArgumentOutOfRangeException(nameof(birthdate), $"{nameof(birthdate)} must be in the past.");
             }
         }
     }
