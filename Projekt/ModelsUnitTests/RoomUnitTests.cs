@@ -5,6 +5,11 @@ namespace ModelsUnitTests;
 public class RoomUnitTests
 {
     private Room _Room = null!;
+    [SetUp]
+    public void Setup()
+    {
+        _Room = new Room("Room 101", 30);
+    }
     [Test]
     [TestCase("Room 101", 30)]
     [TestCase("Room 102", 25)]
@@ -16,23 +21,48 @@ public class RoomUnitTests
         Assert.That(_Room.Size, Is.EqualTo(size));
     }
     [Test]
-    [TestCase("Room 101", 30, "Room 102")]
-    [TestCase("Room 102", 25, "Room 103")]
-    [TestCase("Room 103", 20, "Room 104")]
-    public void ChangeName_WhenSet_ReturnsNewName(string name, int size, string newName)
+    [TestCase(null, 30)]
+    [TestCase(" ", 25)]
+    public void CreateRoom_WithInvalidName_ThrowsArgumentException(string? name, int size)
     {
-        _Room = TestUtils.CreateRoom(name, size);
+        var ex = Assert.Throws<ArgumentException>(() => TestUtils.CreateRoom(name, size));
+        Assert.That(ex.ParamName, Is.EqualTo("name"));
+    }
+    [Test]
+    [TestCase("Room 101", -1)]
+    public void CreateRoom_WithInvalidSize_ThrowsArgumentOutOfRangeException(string name, int size)
+    {
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => TestUtils.CreateRoom(name, size));
+        Assert.That(ex.ParamName, Is.EqualTo("size"));
+    }
+    [Test]
+    [TestCase("Room 102")]
+    public void ChangeName_WhenSet_ReturnsNewName(string newName)
+    {
         _Room.ChangeName(newName);
         Assert.That(_Room.Name, Is.EqualTo(newName));
     }
     [Test]
-    [TestCase("Room 101", 30, 35)]
-    [TestCase("Room 102", 25, 30)]
-    [TestCase("Room 103", 20, 25)]
-    public void ChangeSize_WhenSet_ReturnsNewSize(string name, int size, int newSize)
+    [TestCase(null)]
+    [TestCase(" ")]
+    public void ChangeName_SetInvalidValue_ThrowsArgumentException(string? newName)
     {
-        _Room = TestUtils.CreateRoom(name, size);
+        var ex = Assert.Throws<ArgumentException>(() => _Room.ChangeName(newName));
+        Assert.That(ex.ParamName, Is.EqualTo("name"));
+    }
+    [Test]
+    [TestCase(35)]
+    [TestCase(52)]
+    public void ChangeSize_WhenSet_ReturnsNewSize(int newSize)
+    {
         _Room.ChangeSize(newSize);
         Assert.That(_Room.Size, Is.EqualTo(newSize));
+    }
+    [Test]
+    [TestCase(-1)]
+    public void ChangeSize_SetInvalidValue_ThrowsArgumentOutOfRangeException(int newSize)
+    {
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => _Room.ChangeSize(newSize));
+        Assert.That(ex.ParamName, Is.EqualTo("size"));
     }
 }

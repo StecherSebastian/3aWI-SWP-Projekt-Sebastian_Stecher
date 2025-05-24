@@ -4,16 +4,19 @@ namespace ModelsUnitTests;
 
 public class ClassroomUnitTests
 {
-    Classroom _Classroom = new Classroom("Test", 100, 20, true);
+    Classroom _Classroom = null!;
+    Student _Student = null!;
     [SetUp]
     public void Setup()
     {
+        _Classroom = new Classroom("Room 101", 30, 15, false);
+        _Student = new Student("Sebastian", "Stecher", new DateTime(2008, 5, 10), 0, 0, 0);
     }
 
     [Test]
     [TestCase("Room 101", 30, 15, false)]
     [TestCase("Room 102", 25, 10, true)]
-    [TestCase("Room 103", 20, 5, false)]
+    [TestCase("Room 103", 99, 0, false)]
     public void CreateClassroom_WithValidInputs_ReturnsClassroomWithCorrectAttributes(string name, int size, int seats, bool cynap)
     {
         _Classroom = new Classroom(name, size, seats, cynap);
@@ -23,23 +26,48 @@ public class ClassroomUnitTests
         Assert.That(_Classroom.Cynap, Is.EqualTo(cynap));
     }
     [Test]
-    [TestCase("Room 101", 30, 15, false, 10)]
-    [TestCase("Room 103", 20, 5, false, 15)]
-    public void ChangeNumberOfSeats_WhenSet_ReturnsNewNumberOfSeats(string name, int size, int seats, bool cynap, int newSeats)
+    [TestCase("Room 101", 30, -12, false)]
+    public void CreateClassroom_WithInvalidSeats_ThrowsArgumentOutOfRangeException(string name, int size, int seats, bool cynap)
     {
-        _Classroom = new Classroom(name, size, seats, cynap);
-        _Classroom.ChangeNumberOfSeats(newSeats);
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new Classroom(name, size, seats, cynap));
+        Assert.That(ex.ParamName, Is.EqualTo("seats"));
+    }
+    [Test]
+    [TestCase(10)]
+    [TestCase(15)]
+    public void ChangeSeatsCount_WhenSet_ReturnsNewNumberOfSeats(int newSeats)
+    {
+        _Classroom.ChangeSeatsCount(newSeats);
         Assert.That(_Classroom.Seats, Is.EqualTo(newSeats));
     }
     [Test]
-    [TestCase("Room 101", 30, 15, false, true)]
-    [TestCase("Room 102", 25, 10, true, false)]
-    [TestCase("Room 103", 20, 5, false, true)]
-    public void ChangeCynap_WhenSet_ReturnsNewCynap(string name, int size, int seats, bool cynap, bool newCynap)
+    [TestCase(-1)]
+    [TestCase(100)]
+    public void ChangeSeatsCount_SetInvalidValue_ThrowsArgumentOutOfRangeException(int newSeats)
     {
-        _Classroom = new Classroom(name, size, seats, cynap);
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => _Classroom.ChangeSeatsCount(newSeats));
+        Assert.That(ex.ParamName, Is.EqualTo("seats"));
+    }
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ChangeCynap_WhenSet_ReturnsNewValue(bool newCynap)
+    {
         _Classroom.ChangeCynap(newCynap);
         Assert.That(_Classroom.Cynap, Is.EqualTo(newCynap));
+    }
+    [Test]
+    [TestCase("Room 102")]
+    public void ChangeName_WhenSet_ReturnsNewName(string newName)
+    {
+        _Classroom.ChangeName(newName);
+        Assert.That(_Classroom.Name, Is.EqualTo(newName));
+    }
+    [Test]
+    public void AddStudent_WhenStudentIsValid_AddsStudentToClassroom()
+    {
+        _Classroom.AddStudent(_Student);
+        Assert.That(_Classroom.Students, Contains.Item(_Student));
     }
     [Test]
     public void AddStudent_WhenStudentIsNull_ThrowsArgumentNullException()

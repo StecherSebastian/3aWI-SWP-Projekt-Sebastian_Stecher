@@ -11,6 +11,7 @@ namespace Projekt.Models
         {
             Validator.ValidateString(name, nameof(name));
             Name = name;
+            ValidateSize(size);
             Size = size;
         }
         public void ChangeName(string name)

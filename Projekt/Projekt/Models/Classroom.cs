@@ -11,7 +11,7 @@
             Seats = seats;
             Cynap = cynap;
         }
-        public void ChangeNumberOfSeats(int seats)
+        public void ChangeSeatsCount(int seats)
         {
             ValidNumberOfSeats(seats);
             Seats = seats;
