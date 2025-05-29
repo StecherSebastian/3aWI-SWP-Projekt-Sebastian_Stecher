@@ -1,5 +1,6 @@
 using Projekt.Models;
 using ModelsUnitTests.Helpers;
+
 namespace ModelsUnitTests
 {
     public class PersonUnitTests
@@ -14,7 +15,7 @@ namespace ModelsUnitTests
         [TestCase("Sebastian", "Stecher", "10.05.2008", 0)]
         [TestCase("Florian", "Fleisch", "21.11.2007", 0)]
         [TestCase("Leonie-Sophie", "Stecher", "10.05.2008", 0)]
-        public void CreatePerson_WithValidInputs_ReturnsPersonWithCorrectAttributes(string firstName, string lastName, string birthdateString, Person.Genders gender)
+        public void CreatePerson_WithValidValues_ReturnsPersonWithCorrectAttributes(string firstName, string lastName, string birthdateString, Person.Genders gender)
         {
             DateTime birthdate = TestUtils.ParseBirthdate(birthdateString);
             _Person = TestUtils.CreatePerson(firstName, lastName, birthdateString, gender);

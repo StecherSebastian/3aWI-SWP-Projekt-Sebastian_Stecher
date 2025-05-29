@@ -1,11 +1,10 @@
 ﻿using Projekt.Models;
 
 namespace ModelsUnitTests;
-
 public class ClassroomUnitTests
 {
-    Classroom _Classroom = null!;
-    Student _Student = null!;
+    private Classroom _Classroom = null!;
+    private Student _Student = null!;
     [SetUp]
     public void Setup()
     {
@@ -17,7 +16,7 @@ public class ClassroomUnitTests
     [TestCase("Room 101", 30, 15, false)]
     [TestCase("Room 102", 25, 10, true)]
     [TestCase("Room 103", 99, 0, false)]
-    public void CreateClassroom_WithValidInputs_ReturnsClassroomWithCorrectAttributes(string name, int size, int seats, bool cynap)
+    public void CreateClassroom_WithValidValues_ReturnsClassroomWithCorrectAttributes(string name, int size, int seats, bool cynap)
     {
         _Classroom = new Classroom(name, size, seats, cynap);
         Assert.That(_Classroom.Name, Is.EqualTo(name));
@@ -67,12 +66,40 @@ public class ClassroomUnitTests
     public void AddStudent_WhenStudentIsValid_AddsStudentToClassroom()
     {
         _Classroom.AddStudent(_Student);
-        Assert.That(_Classroom.Students, Contains.Item(_Student));
+        Assert.That(_Classroom.Students, Does.Contain(_Student));
     }
     [Test]
     public void AddStudent_WhenStudentIsNull_ThrowsArgumentNullException()
     {
         var ex = Assert.Throws<ArgumentNullException>(() => _Classroom.AddStudent(null!));
         Assert.That(ex.ParamName, Is.EqualTo("student"));
+    }
+    [Test]
+    public void RemoveStudent_WhenStudentExists_RemovesStudentFromClassroom()
+    {
+        _Classroom.AddStudent(_Student);
+        Assert.That(_Classroom.Students, Does.Contain(_Student));
+        _Classroom.RemoveStudent(_Student);
+        Assert.That(_Classroom.Students, Does.Not.Contain(_Student));
+    }
+    [Test]
+    public void RemoveStudent_WhenStudentIsNull_ThrowsArgumentNullException()
+    {
+        var ex = Assert.Throws<ArgumentNullException>(() => _Classroom.RemoveStudent(null!));
+        Assert.That(ex.ParamName, Is.EqualTo("student"));
+    }
+    [Test]
+    public void RemoveStudent_WhenStudentDoesNotExist_ThrowsInvalidOperationException()
+    {
+        var ex = Assert.Throws<InvalidOperationException>(() => _Classroom.RemoveStudent(_Student));
+        Assert.That(ex.Message, Does.Contain("Student not found in classroom"));
+    }
+    [Test]
+    public void ClearStudents_ClearsAllStudents()
+    {
+        _Classroom.AddStudent(_Student);
+        Assert.That(_Classroom.Students, Is.Not.Empty);
+        _Classroom.ClearStudents();
+        Assert.That(_Classroom.Students, Is.Empty);
     }
 }

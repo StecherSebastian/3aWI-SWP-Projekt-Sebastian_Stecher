@@ -1,4 +1,5 @@
 ﻿using Projekt.Utilities;
+
 namespace Projekt.Models
 {
     public class Person

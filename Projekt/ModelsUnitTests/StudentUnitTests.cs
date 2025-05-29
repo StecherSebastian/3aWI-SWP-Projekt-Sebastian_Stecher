@@ -1,7 +1,7 @@
 ﻿using ModelsUnitTests.Helpers;
 using Projekt.Models;
-namespace ModelsUnitTests;
 
+namespace ModelsUnitTests;
 public class StudentUnitTests
 {
     private Student _Student = null!;

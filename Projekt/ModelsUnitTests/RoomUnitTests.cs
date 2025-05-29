@@ -14,7 +14,7 @@ public class RoomUnitTests
     [TestCase("Room 101", 30)]
     [TestCase("Room 102", 25)]
     [TestCase("Room 103", 20)]
-    public void CreateRoom_WithValidInputs_ReturnsRoomWithCorrectAttributes(string name, int size)
+    public void CreateRoom_WithValidValues_ReturnsRoomWithCorrectAttributes(string name, int size)
     {
         _Room = TestUtils.CreateRoom(name, size);
         Assert.That(_Room.Name, Is.EqualTo(name));
