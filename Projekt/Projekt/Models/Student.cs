@@ -37,6 +37,7 @@ namespace Projekt.Models
             Validator.ValidateEnumValue(track, nameof(track));
             Track = track;
         }
+        protected Student() : base() { }
         public void ChangeSchoolclass(Schoolclasses schoolclass)
         {
             Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
