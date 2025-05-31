@@ -14,6 +14,10 @@ namespace Projekt.Models
             ValidateSize(size);
             Size = size;
         }
+        protected Room()
+        {
+            Name = "Default Room";
+        }
         public void ChangeName(string name)
         {
             Validator.ValidateString(name, nameof(name));

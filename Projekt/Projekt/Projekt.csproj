@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Database\" />
+    <Folder Include="Database\Migrations\" />
     <Folder Include="wwwroot\style\" />
     <Folder Include="wwwroot\scripts\" />
     <Folder Include="wwwroot\sites\" />

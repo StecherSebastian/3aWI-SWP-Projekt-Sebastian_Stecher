@@ -4,7 +4,7 @@ namespace Projekt.Models
 {
     public class Person
     {
-        public int ID;
+        public int ID { get; set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public DateTime Birthdate { get; private set; }
@@ -26,6 +26,11 @@ namespace Projekt.Models
             Birthdate = birthdate;
             Validator.ValidateEnumValue(gender, nameof(gender));
             Gender = gender;
+        }
+        protected Person()
+        {
+            FirstName = "Firstname";
+            LastName = "Lastname";
         }
         public void ChangeFirstName(string firstName)
         {

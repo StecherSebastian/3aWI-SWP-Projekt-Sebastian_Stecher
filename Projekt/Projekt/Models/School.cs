@@ -13,6 +13,10 @@ namespace Projekt.Models
             Validator.ValidateString(name, nameof(name));
             Name = name;
         }
+        protected School()
+        {
+            Name = "Default School";
+        }
         public void ChangeName(string name)
         {
             Validator.ValidateString(name, nameof(name));

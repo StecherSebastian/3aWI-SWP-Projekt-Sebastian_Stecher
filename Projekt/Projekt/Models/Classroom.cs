@@ -11,6 +11,7 @@
             Seats = seats;
             Cynap = cynap;
         }
+        protected Classroom() : base() { }
         public void ChangeSeatsCount(int seats)
         {
             ValidNumberOfSeats(seats);
