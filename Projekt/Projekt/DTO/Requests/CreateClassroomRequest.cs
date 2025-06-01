@@ -1,6 +1,4 @@
-﻿using Projekt.Database;
-using Projekt.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Projekt.DTO.Requests
 {

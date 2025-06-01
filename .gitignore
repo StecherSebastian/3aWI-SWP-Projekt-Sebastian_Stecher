@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/Projekt/Projekt/Database/ProjektDB.db
+/Projekt/Projekt/Database/ProjektDB.db-shm
+/Projekt/Projekt/Database/ProjektDB.db-wal
