@@ -93,7 +93,11 @@ namespace Projekt.Controllers
         {
             try
             {
-                List<School> schools = _Context.Schools.Where(s => request.IDs.Contains(s.ID)).ToList();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                List<School> schools = _Context.Schools.Where(s => request.SchoolIDs.Contains(s.ID)).ToList();
                 _Context.Schools.RemoveRange(schools);
                 _Context.SaveChanges();
                 return Ok();
@@ -138,6 +142,10 @@ namespace Projekt.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 if (request.Size * 0.75! <= request.Seats)
                 {
                     return ValidationProblem("Number of seats must be a maximum of 75% of room size.");
@@ -174,19 +182,152 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        // GetClassrooms endpoint to retrieve all classrooms in a school
-        // RemoveClassroom endpoint to delete a classroom by its ID
-        // RemoveClassrooms endpoint to delete classrooms by a list of their IDs
+        [HttpGet("getClassrooms", Name = "GetClassrooms")]
+        public IActionResult GetClassrooms()
+        {
+            try
+            {
+                List<Classroom> classrooms = _Context.Classrooms.ToList();
+                return Ok(classrooms);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("deleteClassroom/{id:int}", Name = "DeleteClassroom")]
+        public IActionResult DeleteClassroom(int id)
+        {
+            try
+            {
+                Classroom? classroom = _Context.Classrooms.FirstOrDefault(s => s.ID == id);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                _Context.Classrooms.Remove(classroom);
+                _Context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("deleteClassrooms", Name = "DeleteClassrooms")]
+        public IActionResult DeleteClassrooms([FromBody] DeleteClassroomsRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                List<Classroom> classrooms = _Context.Classrooms.Where(s => request.ClassroomIDs.Contains(s.ID)).ToList();
+                _Context.Classrooms.RemoveRange(classrooms);
+                _Context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
         // AddStudent endpoint to add a student to a classroom
 
-        // CreateStudent endpoint to create a new student
-        // GetStudent endpoint to retrieve a student by its ID
-        // GetStudents endpoint to retrieve all students in a school
-        // RemoveStudent endpoint to delete a student by its ID
-        // RemoveStudents endpoint to delete students by a list of their IDs
+        [HttpPost("createStudent", Name = "CreateStudent")]
+        public IActionResult CreateStudent([FromBody] CreateStudentRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Student student = new Student(request.FirstName, request.LastName, request.BirthDate, request.Gender, request.Schoolclass, request.Track);
+                _Context.Students.Add(student);
+                _Context.SaveChanges();
+                return CreatedAtRoute(
+                    routeName: "GetStudentById",
+                    routeValues: new { id = student.ID },
+                    value: (student.FirstName, student.LastName)
+                );
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("getStudent/{id:int}", Name = "GetStudentById")]
+        public IActionResult GetStudent(int id)
+        {
+            try
+            {
+                Student? student = _Context.Students.FirstOrDefault(s => s.ID == id);
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+                return Ok(student);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("getStudents", Name = "GetStudents")]
+        public IActionResult GetStudents()
+        {
+            try
+            {
+                List<Student> students = _Context.Students.ToList();
+                return Ok(students);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("deleteStudent/{id:int}", Name = "DeleteStudent")]
+        public IActionResult DeleteStudent(int id)
+        {
+            try
+            {
+                Student? student = _Context.Students.FirstOrDefault(s => s.ID == id);
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+                _Context.Students.Remove(student);
+                _Context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("deleteStudents", Name = "DeleteStudents")]
+        public IActionResult DeleteStudents([FromBody] DeleteStudentsRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                List<Student> students = _Context.Students.Where(s => request.StudentIDs.Contains(s.ID)).ToList();
+                _Context.Students.RemoveRange(students);
+                _Context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
         private IActionResult HandleInternalError(Exception ex)
         {
-            // Optional: log exception here
             return StatusCode(500, "Internal server error: " + ex.Message);
         }
     }
