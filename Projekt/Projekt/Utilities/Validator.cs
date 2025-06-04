@@ -1,4 +1,6 @@
-﻿namespace Projekt.Utilities
+﻿using System.Drawing;
+
+namespace Projekt.Utilities
 {
     public class Validator
     {
@@ -14,6 +16,14 @@
             if (!Enum.IsDefined(typeof(T), value))
             {
                 throw new ArgumentOutOfRangeException(paramName, $"{value} is not a valid value for {typeof(T).Name}.");
+            }
+        }
+        public static void ValidNumberOfSeats(int size, int seats)
+        {
+            const int ratio = 75;
+            if (seats < 0 || seats > (size * ratio / 100))
+            {
+                throw new ArgumentOutOfRangeException(nameof(seats), $"Number of seats must be positive and less or equal to {ratio}% of the room size.");
             }
         }
     }

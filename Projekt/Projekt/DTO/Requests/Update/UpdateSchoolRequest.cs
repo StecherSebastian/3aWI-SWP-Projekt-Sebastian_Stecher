@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Projekt.DTO.Requests
+namespace Projekt.DTO.Requests.Update
 {
-    public class ChangeSchoolNameRequest
+    public class UpdateSchoolRequest
     {
         [Required(ErrorMessage = "School ID is required.")]
         public int ID { get; set; }

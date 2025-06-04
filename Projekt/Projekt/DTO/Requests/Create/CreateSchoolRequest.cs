@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Projekt.DTO.Requests
+namespace Projekt.DTO.Requests.Create
 {
     public class CreateSchoolRequest
     {

@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Projekt.Utilities;
 using Projekt.Database;
 using Projekt.DTO.Requests;
+using Projekt.DTO.Requests.Create;
+using Projekt.DTO.Requests.Delete;
+using Projekt.DTO.Requests.Update;
 using Projekt.Models;
 
 namespace Projekt.Controllers
@@ -107,8 +111,8 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        [HttpPut("changeSchoolName", Name = "ChangeSchoolName")]
-        public IActionResult ChangeSchoolName([FromBody] ChangeSchoolNameRequest request)
+        [HttpPut("updateSchool", Name = "UpdateSchool")]
+        public IActionResult UpdateSchool([FromBody] UpdateSchoolRequest request)
         {
             try
             {
@@ -136,7 +140,6 @@ namespace Projekt.Controllers
         // RemoveStudentFromSchool endpoint to remove a student by its ID
         // Add Endpoints for various functions in the school class
 
-
         [HttpPost("createClassroom", Name = "CreateClassroom")]
         public IActionResult CreateClassroom([FromBody] CreateClassroomRequest request)
         {
@@ -146,10 +149,7 @@ namespace Projekt.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                if (request.Size * 0.75! <= request.Seats)
-                {
-                    return ValidationProblem("Number of seats must be a maximum of 75% of room size.");
-                }
+                Validator.ValidNumberOfSeats(request.Size, request.Seats);
                 Classroom classroom = new Classroom(request.Name, request.Size, request.Seats, request.Cynap);
                 _Context.Classrooms.Add(classroom);
                 _Context.SaveChanges();
@@ -170,7 +170,7 @@ namespace Projekt.Controllers
             try
             {
                 Classroom? classroom = _Context.Classrooms.FirstOrDefault(s => s.ID == id);
-                if ( classroom == null)
+                if (classroom == null)
                 {
                     return NotFound("Classroom not found");
                 }
@@ -233,7 +233,157 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        // AddStudent endpoint to add a student to a classroom
+        [HttpPut("updateClassroom", Name = "UpdateClassroom")]
+        public IActionResult ChangeClassroomName([FromBody] UpdateClassroomRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Validator.ValidNumberOfSeats(request.Size, request.Seats);
+                Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == request.ID);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                classroom.ChangeName(request.Name);
+                classroom.ChangeSize(request.Size);
+                classroom.ChangeSeatsCount(request.Seats);
+                classroom.ChangeCynap(request.Cynap);
+                _Context.SaveChanges();
+                return Ok(classroom);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpPut("addStudentToClassroom", Name = "AddStudentToClassroom")]
+        public IActionResult AddStudentToClassroom([FromBody] AddStudentToClassroomRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == request.ClassroomID);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                Student? student = _Context.Students.FirstOrDefault(s => s.ID == request.StudentID);
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+                classroom.AddStudent(student);
+                _Context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        // Endpoint to remove a Student from  a Classroom
+        [HttpDelete("removeStudent/{studentID:int}/fromClassroom/{classroomID:int}/")]
+        public IActionResult RemoveStudentFromClassroom(int studentID, int classroomID)
+        {
+            try
+            {
+                Classroom? classroom = _Context.Classrooms.Include(s => s.Students).FirstOrDefault(s => s.ID == classroomID);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                Student? student = _Context.Students.FirstOrDefault(s => s.ID == studentID);
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+                if (classroom.Students.Contains(student))
+                {
+                    classroom.RemoveStudent(student);
+                    _Context.SaveChanges();
+                    return Ok("Student from Classroom removed.");
+                }
+                else
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeStudentsFromClassroom", Name = "RemoveStudentsFromClassroom")]
+        public IActionResult RemoveStudentsFromClassroom([FromBody] RemoveStudentsFromClassroomRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Classroom? classroom = _Context.Classrooms.Include(s => s.Students).FirstOrDefault(c => c.ID == request.ClassroomID);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                List<Student> students = _Context.Students.Where(s => request.StudentIDs.Contains(s.ID)).ToList();
+                if (students.Count == 0)
+                {
+                    return NotFound("No students found with the provided IDs.");
+                }
+                List<int> removed = new();
+                List<int> notInClassroom = new();
+                foreach (var student in students)
+                {
+                    if (classroom.Students.Contains(student))
+                    {
+                        classroom.RemoveStudent(student);
+                        removed.Add(student.ID);
+                    }
+                    else
+                    {
+                        notInClassroom.Add(student.ID);
+                    }
+                }
+                return Ok(new
+                {
+                    RemovedStudentIDs = removed,
+                    NotInClassroom = notInClassroom,
+                    Message = removed.Any() ? "Some or all students removed successfully." : "No students were removed. None were in the classroom."
+                });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeAllStudentsFromClassroom/{classroomID:int}", Name = "RemoveAllStudentsFromClassroom")]
+        public IActionResult RemoveAllStudentsFromClassroom(int classroomID)
+        {
+            try
+            {
+                Classroom? classroom = _Context.Classrooms.FirstOrDefault(s => s.ID == classroomID);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                classroom.ClearStudents();
+                _Context.SaveChanges();
+                return Ok("All Students from Classroom removed.");
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
 
         [HttpPost("createStudent", Name = "CreateStudent")]
         public IActionResult CreateStudent([FromBody] CreateStudentRequest request)
@@ -250,7 +400,7 @@ namespace Projekt.Controllers
                 return CreatedAtRoute(
                     routeName: "GetStudentById",
                     routeValues: new { id = student.ID },
-                    value: (student.FirstName, student.LastName)
+                    value: student.FirstName
                 );
             }
             catch (Exception ex)
@@ -320,6 +470,34 @@ namespace Projekt.Controllers
                 _Context.Students.RemoveRange(students);
                 _Context.SaveChanges();
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpPut("updateStudent", Name = "UpdateStudent")]
+        public IActionResult UpdateStudent([FromBody] UpdateStudentRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Student? student = _Context.Students.FirstOrDefault(s => s.ID == request.ID);
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+                student.ChangeFirstName(request.FirstName);
+                student.ChangeLastName(request.LastName);
+                student.ChangeBirthdate(request.BirthDate);
+                student.ChangeGender(request.Gender);
+                student.ChangeSchoolclass(request.Schoolclass);
+                student.ChangeTrack(request.Track);
+                _Context.SaveChanges();
+                return Ok(student);
             }
             catch (Exception ex)
             {

@@ -54,9 +54,9 @@ namespace Projekt.Models
         }
         private void ValidateBirthdate(DateTime birthdate)
         {
-            if (birthdate > DateTime.Now)
+            if (birthdate >= DateTime.Now)
             {
-                throw new ArgumentOutOfRangeException(nameof(birthdate), $"{nameof(birthdate)} must be in the past.");
+                throw new ArgumentOutOfRangeException(nameof(birthdate), $"{nameof(birthdate)} must be in the past and cannot be today.");
             }
         }
     }
