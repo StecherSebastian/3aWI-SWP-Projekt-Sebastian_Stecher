@@ -4,8 +4,6 @@ namespace Projekt.DTO.Requests.Update
 {
     public class UpdateSchoolRequest
     {
-        [Required(ErrorMessage = "School ID is required.")]
-        public int ID { get; set; }
         [Required(ErrorMessage = "School Name is required")]
         [MinLength(3, ErrorMessage = "School Name must be at least 3 characters long.")]
         [StringLength(100, ErrorMessage = "School Name cannot be longer than 100 characters.")]

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Projekt.Models;
 
-namespace Projekt.DTO.Requests
+namespace Projekt.DTO.Requests.Aggregation
 {
     public class StudentAggregationRequest
     {

@@ -5,9 +5,6 @@ namespace Projekt.DTO.Requests.Update
 {
     public class UpdateStudentRequest
     {
-        [Required(ErrorMessage = "ID is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "ID must be a positive integer.")]
-        public int ID { get; set; }
         [MinLength(3, ErrorMessage = "Firstname must be at least 3 characters long.")]
         [StringLength(100, ErrorMessage = "Firstname cannot be longer than 100 characters.")]
         public string FirstName { get; set; } = string.Empty;
