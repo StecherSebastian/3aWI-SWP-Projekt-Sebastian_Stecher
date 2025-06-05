@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Projekt.Utilities
+﻿namespace Projekt.Utilities
 {
     public class Validator
     {

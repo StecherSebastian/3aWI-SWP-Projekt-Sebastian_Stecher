@@ -2,7 +2,7 @@
 
 namespace Projekt.DTO.Requests
 {
-    public class AddStudentToClassroomRequest
+    public class AddStudentsToClassroomRequest
     {
         [Required(ErrorMessage = "An ID of a Classroom is required.")]
         public int ClassroomID { get; set; }

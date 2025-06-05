@@ -134,12 +134,518 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        // AddClassroomToSchool endpoint to add a classroom to a school
-        // RemoveClassroomFromSchool endpoint to remove a classroom by its ID
-        // AddStudentToSchool endpoint to add a student to a school
-        // RemoveStudentFromSchool endpoint to remove a student by its ID
-        // Add Endpoints for various functions in the school class
-
+        [HttpPut("addClassroom/{classroomID:int}/ToSchool/{schoolID:int}", Name = "AddClassroomToSchool")]
+        public IActionResult AddClassroomToSchool(int classroomID, int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == classroomID);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                if (school.Classrooms.Contains(classroom))
+                {
+                    return NoContent();
+                }
+                school.AddClassroom(classroom);
+                _Context.SaveChanges();
+                return Ok("Classroom added to School successfully.");
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeClassroom/{classroomID:int}/fromSchool/{schoolID:int}")]
+        public IActionResult RemoveClassroomFromSchool(int classroomID, int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.Include(s => s.Classrooms).FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == classroomID);
+                if (classroom == null)
+                {
+                    return NotFound("Classroom not found");
+                }
+                if (school.Classrooms.Contains(classroom))
+                {
+                    school.RemoveClassroom(classroom);
+                    _Context.SaveChanges();
+                    return Ok("Classroom removed from School successfully.");
+                }
+                else
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeClassroomsFromSchool", Name = "RemoveClassroomsFromSchool")]
+        public IActionResult RemoveClassroomsFromSchool([FromBody] RemoveClassroomsFromSchoolRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Classrooms).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                List<Classroom> classrooms = _Context.Classrooms.Where(c => request.ClassroomIDs.Contains(c.ID)).ToList();
+                if (classrooms.Count == 0)
+                {
+                    return NotFound("No classrooms found with the provided IDs.");
+                }
+                List<int> removed = new();
+                List<int> notInSchool = new();
+                foreach (var classroom in classrooms)
+                {
+                    if (school.Classrooms.Contains(classroom))
+                    {
+                        school.RemoveClassroom(classroom);
+                        removed.Add(classroom.ID);
+                    }
+                    else
+                    {
+                        notInSchool.Add(classroom.ID);
+                    }
+                }
+                _Context.SaveChanges();
+                return Ok(new
+                {
+                    RemovedClassroomIDs = removed,
+                    NotInSchool = notInSchool,
+                    Message = removed.Any() ? "Some or all classrooms removed successfully." : "No classrooms were removed. None were in the school."
+                });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeAllClassroomsFromSchool/{schoolID:int}", Name = "RemoveAllClassroomsFromSchool")]
+        public IActionResult RemoveAllClassroomsFromSchool(int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                if (!school.Classrooms.Any())
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    school.ClearClassrooms();
+                    _Context.SaveChanges();
+                    return Ok("All Classrooms from School removed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("countClassroomsInSchool/{schoolID:int}", Name = "CountClassroomsInSchool")]
+        public IActionResult CountClassrooms(int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.Include(s => s.Classrooms).FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("No schools found.");
+                }
+                int count = school.CountClassrooms();
+                return Ok(new { Count = count });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("getClassroomsWithCynapInSchool/{schoolID:int}", Name = "GetClassroomsWithCynapInSchool")]
+        public IActionResult GetClassroomsWithCynapInSchool(int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.Include(s => s.Classrooms).FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("No schools found.");
+                }
+                List<string> classroomsWithCynap = school.GetClassroomsWithCynap();
+                return Ok(classroomsWithCynap);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("getClassroomsWithStudentCountInSchool/{schoolID:int}", Name = "GetClassroomsWithStudentCountInSchool")]
+        public IActionResult GetClassroomsWithStudentCountInSchool(int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.Include(s => s.Classrooms).FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("No schools found.");
+                }
+                List<(string, int)> classroomsWithStudentCount = school.GetClassroomsWithStudentCount();
+                return Ok(classroomsWithStudentCount);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpPut("addStudent/{studentID:int}/toSchool/{schoolID:int}", Name = "AddStudentToSchool")]
+        public IActionResult AddStudentToSchool(int studentID, int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                Student? student = _Context.Students.FirstOrDefault(s => s.ID == studentID);
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+                if (school.Students.Contains(student))
+                {
+                    return NoContent();
+                }
+                school.AddStudent(student);
+                _Context.SaveChanges();
+                return Ok("Student added to School successfully.");
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeStudent/{studentID:int}/fromSchool/{schoolID:int}", Name = "RemoveStudentFromSchool")]
+        public IActionResult RemoveStudentFromSchool(int studentID, int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                Student? student = _Context.Students.FirstOrDefault(s => s.ID == studentID);
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+                if (school.Students.Contains(student))
+                {
+                    school.RemoveStudent(student);
+                    _Context.SaveChanges();
+                    return Ok("Student from School removed.");
+                }
+                else
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeStudentsFromSchool", Name = "RemoveStudentsFromSchool")]
+        public IActionResult RemoveStudentsFromSchool([FromBody] RemoveStudentsFromSchoolRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                List<Student> students = _Context.Students.Where(s => request.StudentIDs.Contains(s.ID)).ToList();
+                if (students.Count == 0)
+                {
+                    return NotFound("No students found with the provided IDs.");
+                }
+                List<int> removed = new();
+                List<int> notInSchool = new();
+                foreach (var student in students)
+                {
+                    if (school.Students.Contains(student))
+                    {
+                        school.RemoveStudent(student);
+                        removed.Add(student.ID);
+                    }
+                    else
+                    {
+                        notInSchool.Add(student.ID);
+                    }
+                }
+                _Context.SaveChanges();
+                return Ok(new
+                {
+                    RemovedStudentIDs = removed,
+                    NotInSchool = notInSchool,
+                    Message = removed.Any() ? "Some or all students removed successfully." : "No students were removed. None were in the school."
+                });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpDelete("removeAllStudentsFromSchool/{schoolID:int}", Name = "RemoveAllStudentsFromSchool")]
+        public IActionResult RemoveAllStudentsFromSchool(int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found");
+                }
+                if (!school.Students.Any())
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    school.ClearStudents();
+                    _Context.SaveChanges();
+                    return Ok("All Students from School removed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("countStudentsInSchool/{schoolID:int}", Name = "CountStudents")]
+        public IActionResult CountStudents(int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("No schools found.");
+                }
+                int count = school.CountStudents();
+                return Ok(new { Count = count });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("countStudentsByGenderInSchool/", Name = "CountStudentsByGender")]
+        public IActionResult CountStudentsByGenderInSchool([FromBody] StudentAggregationRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                var genderCounts = school.CountStudentsByGender(request.Gender);
+                return Ok(genderCounts);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        [HttpGet("countStudentsInSchoolclass", Name = "CountStudentsInSchoolclass")]
+        public IActionResult CountStudentsBySchoolclassInSchool([FromBody] StudentAggregationRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Classrooms).ThenInclude(c => c.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                int count = school.CountStudentsBySchoolclass(request.Schoolclass);
+                return Ok(new { Count = count });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        // CountStudentsInSchoolclassByGender
+        [HttpGet("countStudentsBySchoolclassAndGenderInSchool", Name = "CountStudentsBySchoolclassAndGenderInSchool")]
+        public IActionResult CountStudentsByGenderAndSchoolclassInSchoolclass([FromBody] StudentAggregationRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(c => c.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                int count = school.CountStudentsInSchoolclassByGender(request.Schoolclass, request.Gender);
+                return Ok(new { Count = count });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        // CountStudentsByTrack
+        [HttpGet("countStudentsByTrackInSchool", Name = "CountStudentsByTrackInSchool")]
+        public IActionResult CountStudentsByTrackInSchool([FromBody] StudentAggregationRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                int count = school.CountStudentsByTrack(request.Track);
+                return Ok(new { Count = count });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        // CountStudentsInTrackByGender
+        [HttpGet("countStudentsInTrackByGenderInSchool", Name = "CountStudentsInTrackByGenderInSchool")]
+        public IActionResult CountStudentsByTrackAndGenderInSchool([FromBody] StudentAggregationRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                int count = school.CountStudentsInTrackByGender(request.Track, request.Gender);
+                return Ok(new { Count = count });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        // GetAverageAgeOfStudents
+        [HttpGet("getAverageAgeOfStudentsInSchool/{schoolID:int}", Name = "GetAverageAgeOfStudentsInSchool")]
+        public IActionResult GetAverageAgeOfStudentsInSchool(int schoolID)
+        {
+            try
+            {
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == schoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                double averageAge = school.GetAverageAgeOfStudents();
+                return Ok(new { AverageAge = averageAge });
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        // GetGenderPercentageInSchoolclass
+        [HttpGet("getGenderPercentageInSchoolclass", Name = "GetGenderPercentageInSchoolclass")]
+        public IActionResult GetGenderPercantageInSchoolclassInSchool([FromBody] StudentAggregationRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                double genderPercentage = school.GetGenderPercentageInSchoolclass(request.Gender, request.Schoolclass);
+                return Ok(genderPercentage);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
+        // GetGenderPercentageInTrack
+        [HttpGet("getGenderPercentageInTrack", Name = "GetGenderPercentageInTrack")]
+        public IActionResult GetGenderPercentageInTrackInSchool([FromBody] StudentAggregationRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                School? school = _Context.Schools.Include(s => s.Students).FirstOrDefault(s => s.ID == request.SchoolID);
+                if (school == null)
+                {
+                    return NotFound("School not found.");
+                }
+                double percentage = school.GetGenderPercentageInTrack(request.Gender, request.Track);
+                return Ok(percentage);
+            }
+            catch (Exception ex)
+            {
+                return HandleInternalError(ex);
+            }
+        }
         [HttpPost("createClassroom", Name = "CreateClassroom")]
         public IActionResult CreateClassroom([FromBody] CreateClassroomRequest request)
         {
@@ -260,8 +766,8 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        [HttpPut("addStudentToClassroom", Name = "AddStudentToClassroom")]
-        public IActionResult AddStudentToClassroom([FromBody] AddStudentToClassroomRequest request)
+        [HttpPut("addStudentsToClassroom", Name = "AddStudentsToClassroom")]
+        public IActionResult AddStudentsToClassroom([FromBody] AddStudentsToClassroomRequest request)
         {
             try
             {
@@ -288,7 +794,6 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        // Endpoint to remove a Student from  a Classroom
         [HttpDelete("removeStudent/{studentID:int}/fromClassroom/{classroomID:int}/")]
         public IActionResult RemoveStudentFromClassroom(int studentID, int classroomID)
         {
