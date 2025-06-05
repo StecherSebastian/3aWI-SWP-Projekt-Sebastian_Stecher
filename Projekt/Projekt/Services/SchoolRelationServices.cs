@@ -3,10 +3,10 @@ using Projekt.Database;
 
 namespace Projekt.Services
 {
-    public class SchoolRelationService
+    public class SchoolRelationServices
     {
         private readonly ProjektDbContext _Context;
-        public SchoolRelationService(ProjektDbContext context)
+        public SchoolRelationServices(ProjektDbContext context)
         {
             _Context = context;
         }
