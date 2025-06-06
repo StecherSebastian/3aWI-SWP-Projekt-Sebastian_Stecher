@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt.Services;
-using Projekt.DTO.Requests.Aggregation;
+using Projekt.Models;
 
 namespace Projekt.Controllers
 {
@@ -65,12 +65,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpGet("schools/{schoolID:int}/students/count-by-gender")]
-        public IActionResult CountStudentsByGenderInSchool(int schoolID, [FromBody] StudentAggregationRequest request)
+        public IActionResult CountStudentsByGenderInSchool(int schoolID, [FromQuery] Person.Genders gender)
         {
             try
             {
                 ValidateModelState();
-                int genderCounts = _Services.CountStudentsByGender(schoolID, request.Gender);
+                int genderCounts = _Services.CountStudentsByGender(schoolID, gender);
                 return Ok(genderCounts);
             }
             catch (KeyNotFoundException knfEx)
@@ -83,12 +83,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpGet("schools/{schoolID:int}/students/count-by-schoolclass")]
-        public IActionResult CountStudentsBySchoolclassInSchool(int schoolID, [FromBody] StudentAggregationRequest request)
+        public IActionResult CountStudentsBySchoolclassInSchool(int schoolID, [FromQuery] Student.Schoolclasses schoolclass)
         {
             try
             {
                 ValidateModelState();
-                int count = _Services.CountStudentsInSchoolclass(schoolID, request.Schoolclass);
+                int count = _Services.CountStudentsInSchoolclass(schoolID, schoolclass);
                 return Ok(count);
             }
             catch (KeyNotFoundException knfEx)
@@ -101,12 +101,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpGet("schools/{schoolID:int}/students/count-by-gender&schoolclass")]
-        public IActionResult CountStudentsByGenderAndSchoolclassInSchoolclass(int schoolID, [FromBody] StudentAggregationRequest request)
+        public IActionResult CountStudentsByGenderAndSchoolclassInSchoolclass(int schoolID, [FromQuery] Student.Schoolclasses schoolclass, [FromQuery] Person.Genders gender)
         {
             try
             {
                 ValidateModelState();
-                int count = _Services.CountStudentsInSchoolclassByGender(schoolID, request.Schoolclass, request.Gender);
+                int count = _Services.CountStudentsInSchoolclassByGender(schoolID, schoolclass, gender);
                 return Ok(count);
             }
             catch (KeyNotFoundException knfEx)
@@ -119,12 +119,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpGet("schools/{schoolID:int}/students/count-by-track")]
-        public IActionResult CountStudentsByTrackInSchool(int schoolID, [FromBody] StudentAggregationRequest request)
+        public IActionResult CountStudentsByTrackInSchool(int schoolID, [FromQuery] Student.Tracks track)
         {
             try
             {
                 ValidateModelState();
-                int count = _Services.CountStudentsInTrack(schoolID, request.Track);
+                int count = _Services.CountStudentsInTrack(schoolID, track);
                 return Ok(count);
             }
             catch (KeyNotFoundException knfEx)
@@ -137,13 +137,13 @@ namespace Projekt.Controllers
             }
         }
         [HttpGet("schools/{schoolID:int}/students/count-by-gender&track")]
-        public IActionResult CountStudentsByTrackAndGenderInSchool(int schoolID, [FromBody] StudentAggregationRequest request)
+        public IActionResult CountStudentsByTrackAndGenderInSchool(int schoolID, [FromQuery] Student.Tracks track, [FromQuery] Person.Genders gender)
         {
             try
             {
                 ValidateModelState();
-                int count = _Services.CountStudentsInTrackByGender(schoolID, request.Track, request.Gender);
-                return Ok(new { Count = count });
+                int count = _Services.CountStudentsInTrackByGender(schoolID, track, gender);
+                return Ok(count);
             }
             catch (KeyNotFoundException knfEx)
             {
@@ -171,14 +171,14 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        [HttpGet("schools/{schoolID:int}/students/schoolclasses/gender-percentage")]
-        public IActionResult GetGenderPercantageInSchoolclassInSchool(int schoolID, [FromBody] StudentAggregationRequest request)
+        [HttpGet("schools/{schoolID:int}/students/schoolclasses-gender-percentage")]
+        public IActionResult GetGenderPercantageInSchoolclassInSchool(int schoolID, [FromQuery] Person.Genders gender, [FromQuery] Student.Schoolclasses schoolclass)
         {
             try
             {
                 ValidateModelState();
-                double genderPercentage = _Services.GetGenderPercentageInSchoolclass(schoolID, request.Gender, request.Schoolclass);
-                return Ok(genderPercentage);
+                double percentage = _Services.GetGenderPercentageInSchoolclass(schoolID, gender, schoolclass);
+                return Ok(percentage);
             }
             catch (KeyNotFoundException knfEx)
             {
@@ -189,13 +189,13 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        [HttpGet("schools/{schoolID:int}/students/track/gender-percentage")]
-        public IActionResult GetGenderPercentageInTrackInSchool(int schoolID, [FromBody] StudentAggregationRequest request)
+        [HttpGet("schools/{schoolID:int}/students/track-gender-percentage")]
+        public IActionResult GetGenderPercentageInTrackInSchool(int schoolID, [FromQuery] Person.Genders gender, [FromQuery] Student.Tracks track)
         {
             try
             {
                 ValidateModelState();
-                double percentage = _Services.GetGenderPercentageInTrack(schoolID, request.Gender, request.Track);
+                double percentage = _Services.GetGenderPercentageInTrack(schoolID, gender, track);
                 return Ok(percentage);
             }
             catch (KeyNotFoundException knfEx)
