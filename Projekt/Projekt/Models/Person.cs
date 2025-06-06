@@ -7,8 +7,8 @@ namespace Projekt.Models
         public int ID { get; set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
-        public DateTime Birthdate { get; private set; }
-        public int Age { get { return DateTime.Now.Year - Birthdate.Year; } }
+        public DateTime BirthDate { get; private set; }
+        public int Age { get { return DateTime.Now.Year - BirthDate.Year; } }
         public enum Genders
         {
             m = 0,
@@ -23,7 +23,7 @@ namespace Projekt.Models
             Validator.ValidateString(lastName, nameof(lastName));
             LastName = lastName;
             ValidateBirthdate(birthdate);
-            Birthdate = birthdate;
+            BirthDate = birthdate;
             Validator.ValidateEnumValue(gender, nameof(gender));
             Gender = gender;
         }
@@ -45,7 +45,7 @@ namespace Projekt.Models
         public void ChangeBirthdate(DateTime birthdate)
         {
             ValidateBirthdate(birthdate);
-            Birthdate = birthdate;
+            BirthDate = birthdate;
         }
         public void ChangeGender(Genders gender)
         {

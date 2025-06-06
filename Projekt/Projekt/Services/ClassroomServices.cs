@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Projekt.Models;
 using Projekt.Database;
-using Projekt.DTO.Requests.Create;
 using Projekt.Utilities;
-using Projekt.DTO.Requests.Update;
 
 namespace Projekt.Services
 {
@@ -14,7 +12,7 @@ namespace Projekt.Services
         {
             _Context = context;
         }
-        public Classroom CreateClassroom(CreateClassroomRequest request)
+        public Classroom CreateClassroom(Classroom request)
         {
             Classroom classroom = new Classroom(request.Name, request.Size, request.Seats, request.Cynap);
             _Context.Classrooms.Add(classroom);
@@ -38,13 +36,13 @@ namespace Projekt.Services
             _Context.Classrooms.Remove(classroom);
             _Context.SaveChanges();
         }
-        public void DeletClassrooms(List<int> classroomIds)
+        public void DeletClassrooms(List<int> classroomIDs)
         {
-            List<Classroom> classrooms = _Context.Classrooms.Where(s => classroomIds.Contains(s.ID)).ToList();
+            List<Classroom> classrooms = _Context.Classrooms.Where(s => classroomIDs.Contains(s.ID)).ToList();
             _Context.Classrooms.RemoveRange(classrooms);
             _Context.SaveChanges();
         }
-        public Classroom UpdateClassroom(int id, UpdateClassroomRequest request)
+        public Classroom UpdateClassroom(int id, Classroom request)
         {
             Validator.ValidNumberOfSeats(request.Size, request.Seats);
             Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == id);

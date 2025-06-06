@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Projekt.Models;
 using Projekt.Database;
-using Projekt.DTO.Requests.Create;
-using Projekt.DTO.Requests.Update;
 
 namespace Projekt.Services
 {
@@ -13,7 +11,7 @@ namespace Projekt.Services
         {
             _Context = context;
         }
-        public School CreateSchool(CreateSchoolRequest request)
+        public School CreateSchool(School request)
         {
             var school = new School(request.Name);
             _Context.Schools.Add(school);
@@ -38,13 +36,13 @@ namespace Projekt.Services
             _Context.Schools.Remove(school);
             _Context.SaveChanges();
         }
-        public void DeleteSchools(List<int> ids)
+        public void DeleteSchools(List<int> schoolIDs)
         {
-            List<School> schools = _Context.Schools.Where(s => ids.Contains(s.ID)).ToList();
+            List<School> schools = _Context.Schools.Where(s => schoolIDs.Contains(s.ID)).ToList();
             _Context.Schools.RemoveRange(schools);
             _Context.SaveChanges();
         }
-        public School UpdateSchool(int id, UpdateSchoolRequest request)
+        public School UpdateSchool(int id, School request)
         {
             School? school = _Context.Schools.FirstOrDefault(s => s.ID == id);
             if (school == null) throw new KeyNotFoundException("School not found.");

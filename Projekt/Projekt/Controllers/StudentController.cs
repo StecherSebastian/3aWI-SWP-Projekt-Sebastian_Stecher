@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt.Services;
-using Projekt.DTO.Requests.Create;
-using Projekt.DTO.Requests.Delete;
-using Projekt.DTO.Requests.Update;
 using Projekt.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Projekt.Controllers
 {
@@ -17,7 +15,7 @@ namespace Projekt.Controllers
             _Services = services;
         }
         [HttpPost]
-        public IActionResult CreateStudent([FromBody] CreateStudentRequest request)
+        public IActionResult CreateStudent([FromBody] Student request)
         {
             try
             {
@@ -86,12 +84,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpDelete]
-        public IActionResult DeleteStudents([FromBody] DeleteStudentsRequest request)
+        public IActionResult DeleteStudents([FromBody] List<int> studentIDs)
         {
             try
             {
                 ValidateModelState();
-                _Services.DeleteStudents(request.StudentIDs);
+                _Services.DeleteStudents(studentIDs);
                 return Ok("Students deleted successfully.");
             }
             catch (Exception ex)
@@ -100,7 +98,7 @@ namespace Projekt.Controllers
             }
         }
         [HttpPut("{studentID:int}")]
-        public IActionResult UpdateStudent(int studentID, [FromBody] UpdateStudentRequest request)
+        public IActionResult UpdateStudent(int studentID, [FromBody] Student request)
         {
             try
             {

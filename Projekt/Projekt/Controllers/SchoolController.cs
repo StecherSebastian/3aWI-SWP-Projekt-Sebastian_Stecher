@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Projekt.DTO.Requests.Create;
-using Projekt.DTO.Requests.Delete;
-using Projekt.DTO.Requests.Update;
 using Projekt.Models;
 using Projekt.Services;
 
@@ -18,7 +15,7 @@ namespace Projekt.Controllers
             _Service = service;
         }
         [HttpPost]
-        public IActionResult CreateSchool([FromBody] CreateSchoolRequest request)
+        public IActionResult CreateSchool([FromBody] School request)
         {
             try
             {
@@ -87,12 +84,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpDelete]
-        public IActionResult DeleteSchools([FromBody] DeleteSchoolsRequest request)
+        public IActionResult DeleteSchools([FromBody] List<int> schoolIDs)
         {
             try
             {
                 ValidateModelState();
-                _Service.DeleteSchools(request.SchoolIDs);
+                _Service.DeleteSchools(schoolIDs);
                 return Ok("Schools deleted successfully.");
             }
             catch (Exception ex)
@@ -101,7 +98,7 @@ namespace Projekt.Controllers
             }
         }
         [HttpPut("{id:int}")]
-        public IActionResult UpdateSchool([FromBody] UpdateSchoolRequest request, int id)
+        public IActionResult UpdateSchool(int id, [FromBody] School request)
         {
             try
             {

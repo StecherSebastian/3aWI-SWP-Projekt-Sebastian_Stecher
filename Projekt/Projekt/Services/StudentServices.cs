@@ -1,8 +1,6 @@
 ﻿using Projekt.Utilities;
 using Projekt.Database;
 using Projekt.Models;
-using Projekt.DTO.Requests.Create;
-using Projekt.DTO.Requests.Update;
 
 namespace Projekt.Services
 {
@@ -13,7 +11,7 @@ namespace Projekt.Services
         {
             _Context = context;
         }
-        public Student CreateStudent(CreateStudentRequest request)
+        public Student CreateStudent(Student request)
         {
             Student student = new Student(request.FirstName, request.LastName, request.BirthDate, request.Gender, request.Schoolclass, request.Track);
             _Context.Students.Add(student);
@@ -41,7 +39,7 @@ namespace Projekt.Services
             _Context.Students.RemoveRange(students);
             _Context.SaveChanges();
         }
-        public Student UpdateStudent(int id, UpdateStudentRequest request)
+        public Student UpdateStudent(int id, Student request)
         {
             Validator.ValidateEnumValue(request.Schoolclass, nameof(request.Schoolclass));
             Student? student = _Context.Students.FirstOrDefault(s => s.ID == id);
