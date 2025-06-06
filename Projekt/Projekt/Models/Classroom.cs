@@ -1,4 +1,6 @@
-﻿namespace Projekt.Models
+﻿using Projekt.Utilities;
+
+namespace Projekt.Models
 {
     public class Classroom : Room
     {
@@ -7,14 +9,14 @@
         public List<Student> Students { get; private set; } = new List<Student>();
         public Classroom(string name, int size, int seats, bool cynap) : base(name, size)
         {
-            ValidNumberOfSeats(seats);
+            Validator.ValidNumberOfSeats(size, seats);
             Seats = seats;
             Cynap = cynap;
         }
         protected Classroom() : base() { }
         public void ChangeSeatsCount(int seats)
         {
-            ValidNumberOfSeats(seats);
+            Validator.ValidNumberOfSeats(Size, seats);
             Seats = seats;
         }
         public void ChangeCynap(bool cynap)
@@ -41,14 +43,6 @@
         public void ClearStudents()
         {
             Students.Clear();
-        }
-        private void ValidNumberOfSeats(int seats)
-        {
-            const int ratio = 75;
-            if (seats < 0 || seats > (Size * ratio / 100) )
-            {
-                throw new ArgumentOutOfRangeException(nameof(seats), $"Number of seats must be positive and less or equal to {ratio}% of the room size.");
-            }
         }
     }
 }

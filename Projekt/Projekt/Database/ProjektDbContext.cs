@@ -10,7 +10,7 @@ namespace Projekt.Database
         public DbSet<Student> Students { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string dbPath = Path.Combine(Directory.GetCurrentDirectory(), "ProjektDB.db");
+            string dbPath = Path.Combine(Directory.GetCurrentDirectory(), "Database\\ProjektDB.db");
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
             optionsBuilder.LogTo(log => {
                 Console.ForegroundColor = ConsoleColor.Yellow;
