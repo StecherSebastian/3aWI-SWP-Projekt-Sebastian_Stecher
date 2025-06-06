@@ -26,7 +26,7 @@ namespace Projekt.Services
             if (student == null) throw new KeyNotFoundException("Student not found");
             return student;
         }
-        public List<Student> GetStudents() =>
+        public List<Student> GetAllStudents() =>
              _Context.Students.ToList();
         public void DeleteStudent(int id)
         {

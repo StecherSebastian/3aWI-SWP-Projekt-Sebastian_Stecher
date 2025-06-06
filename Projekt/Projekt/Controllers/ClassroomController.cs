@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Projekt.Utilities;
-using Projekt.Database;
 using Projekt.DTO.Requests.Create;
 using Projekt.DTO.Requests.Delete;
 using Projekt.Models;
 using Projekt.DTO.Requests.Update;
 using Projekt.Services;
-using SQLitePCL;
 
 namespace Projekt.Controllers
 {
@@ -32,6 +28,10 @@ namespace Projekt.Controllers
                     routeValues: new { id = classroom.ID },
                     value: classroom.Name
                 );
+            }
+            catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace Projekt.Controllers
         {
             try
             {
-                List<Classroom> classrooms = _Services.GetClassrooms();
+                List<Classroom> classrooms = _Services.GetAllClassrooms();
                 return Ok(classrooms);
             }
             catch (Exception ex)
@@ -110,6 +110,10 @@ namespace Projekt.Controllers
             catch (KeyNotFoundException knfEx)
             {
                 return NotFound(knfEx.Message);
+            }
+            catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (Exception ex)
             {

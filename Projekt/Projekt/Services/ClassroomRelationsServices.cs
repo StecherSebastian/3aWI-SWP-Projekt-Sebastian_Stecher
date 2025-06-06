@@ -58,7 +58,7 @@ namespace Projekt.Services
             }
             _Context.SaveChanges();
         }
-        public void ClearStudentsFromClassroom(int classroomID)
+        public void RemoveAllStudentsFromClassroom(int classroomID)
         {
             Classroom? classroom = _Context.Classrooms.Include(s => s.Students).FirstOrDefault(s => s.ID == classroomID);
             if (classroom == null)

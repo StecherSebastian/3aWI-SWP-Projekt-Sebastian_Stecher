@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Projekt.Models;
+﻿using Projekt.Models;
 
 namespace Projekt.DTO.Requests.Aggregation
 {

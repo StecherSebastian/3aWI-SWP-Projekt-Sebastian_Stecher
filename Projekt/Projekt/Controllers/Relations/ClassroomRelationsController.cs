@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
 using Projekt.Services;
 using Projekt.DTO.Requests.Relations;
 
@@ -19,7 +18,6 @@ namespace Projekt.Controllers.Relations
         {
             try
             {
-                ValidateModelState();
                 _Services.AddStudentToClassroom(classroomID, studentID);
                 return Ok("Student added to Classroom successfully.");
             }
@@ -71,7 +69,7 @@ namespace Projekt.Controllers.Relations
         {
             try
             {
-                _Services.ClearStudentsFromClassroom(classroomID);
+                _Services.RemoveAllStudentsFromClassroom(classroomID);
                 return Ok("All Students from Classroom removed.");
             }
             catch (KeyNotFoundException knfEx)

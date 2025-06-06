@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Projekt.Services;
 using Projekt.DTO.Requests.Aggregation;
-using Projekt.Models;
 
 namespace Projekt.Controllers
 {

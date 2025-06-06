@@ -23,12 +23,14 @@ namespace Projekt.Services
         }
         public Classroom GetClassroomByID(int id)
         {
-            Classroom? classroom = _Context.Classrooms.Include(c => c.Students).FirstOrDefault(c => c.ID == id);
+            Classroom? classroom = _Context.Classrooms
+                .Include(c => c.Students)
+                .FirstOrDefault(c => c.ID == id);
             if (classroom == null) throw new KeyNotFoundException("Classroom not found");
             return classroom;
         }
-        public List<Classroom> GetClassrooms() =>
-             _Context.Classrooms.Include(c => c.Students).ToList();
+        public List<Classroom> GetAllClassrooms() =>
+             _Context.Classrooms.ToList();
         public void DeleteClassroom(int id)
         {
             Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == id);

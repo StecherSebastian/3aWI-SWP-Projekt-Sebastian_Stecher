@@ -29,9 +29,9 @@ namespace Projekt.Controllers
                     value: student.FirstName
                 );
             }
-            catch (KeyNotFoundException knfEx)
+            catch (ArgumentException aEx)
             {
-                return NotFound(knfEx.Message);
+                return BadRequest(aEx.Message);
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace Projekt.Controllers
         {
             try
             {
-                List<Student> students = _Services.GetStudents();
+                List<Student> students = _Services.GetAllStudents();
                 return Ok(students);
             }
             catch (Exception ex)
@@ -111,6 +111,10 @@ namespace Projekt.Controllers
             catch (KeyNotFoundException knfEx)
             {
                 return NotFound(knfEx.Message);
+            }
+            catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (Exception ex)
             {
