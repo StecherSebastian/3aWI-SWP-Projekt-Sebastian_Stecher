@@ -29,7 +29,6 @@
     <Folder Include="Database\Migrations\" />
     <Folder Include="wwwroot\style\" />
     <Folder Include="wwwroot\scripts\" />
-    <Folder Include="wwwroot\sites\" />
   </ItemGroup>
 
 </Project>
