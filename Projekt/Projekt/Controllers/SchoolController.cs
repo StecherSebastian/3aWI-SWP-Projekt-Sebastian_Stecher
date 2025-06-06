@@ -27,6 +27,10 @@ namespace Projekt.Controllers
                     value: school.Name
                 );
             }
+            catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
+            }
             catch (Exception ex)
             {
                 return HandleInternalError(ex);
@@ -109,6 +113,10 @@ namespace Projekt.Controllers
             catch (KeyNotFoundException knfEx)
             {
                 return NotFound(knfEx.Message);
+            }
+            catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (Exception ex)
             {

@@ -14,6 +14,8 @@ namespace Projekt.Services
         }
         public Classroom CreateClassroom(Classroom request)
         {
+            Validator.ValidateString(request.Name, "ClassroomName");
+            Validator.ValidNumberOfSeats(request.Size, request.Seats);
             Classroom classroom = new Classroom(request.Name, request.Size, request.Seats, request.Cynap);
             _Context.Classrooms.Add(classroom);
             _Context.SaveChanges();
@@ -44,6 +46,7 @@ namespace Projekt.Services
         }
         public Classroom UpdateClassroom(int id, Classroom request)
         {
+            Validator.ValidateString(request.Name, "ClassroomName");
             Validator.ValidNumberOfSeats(request.Size, request.Seats);
             Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == id);
             if (classroom == null) throw new KeyNotFoundException("Classroom not found");

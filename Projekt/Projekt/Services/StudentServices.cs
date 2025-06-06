@@ -13,6 +13,11 @@ namespace Projekt.Services
         }
         public Student CreateStudent(Student request)
         {
+            Validator.ValidateString(request.FirstName, "FirstName");
+            Validator.ValidateString(request.LastName, "LastName");
+            Validator.ValidateEnumValue(request.Gender, "Gender");
+            Validator.ValidateEnumValue(request.Schoolclass, "Schoolclass");
+            Validator.ValidateEnumValue(request.Track, "Track");
             Student student = new Student(request.FirstName, request.LastName, request.BirthDate, request.Gender, request.Schoolclass, request.Track);
             _Context.Students.Add(student);
             _Context.SaveChanges();
@@ -41,6 +46,11 @@ namespace Projekt.Services
         }
         public Student UpdateStudent(int id, Student request)
         {
+            Validator.ValidateString(request.FirstName, "FirstName");
+            Validator.ValidateString(request.LastName, "LastName");
+            Validator.ValidateEnumValue(request.Gender, "Gender");
+            Validator.ValidateEnumValue(request.Schoolclass, "Schoolclass");
+            Validator.ValidateEnumValue(request.Track, "Track");
             Validator.ValidateEnumValue(request.Schoolclass, nameof(request.Schoolclass));
             Student? student = _Context.Students.FirstOrDefault(s => s.ID == id);
             if (student == null) throw new KeyNotFoundException("Student not found");

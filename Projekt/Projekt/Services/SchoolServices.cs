@@ -13,6 +13,7 @@ namespace Projekt.Services
         }
         public School CreateSchool(School request)
         {
+            Utilities.Validator.ValidateString(request.Name, "SchoolName");
             var school = new School(request.Name);
             _Context.Schools.Add(school);
             _Context.SaveChanges();
@@ -44,6 +45,7 @@ namespace Projekt.Services
         }
         public School UpdateSchool(int id, School request)
         {
+            Utilities.Validator.ValidateString(request.Name, "SchoolName");
             School? school = _Context.Schools.FirstOrDefault(s => s.ID == id);
             if (school == null) throw new KeyNotFoundException("School not found.");
             school.ChangeName(request.Name);

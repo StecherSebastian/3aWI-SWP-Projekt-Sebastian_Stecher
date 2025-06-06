@@ -1,4 +1,4 @@
-﻿using Projekt.Utilities;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Projekt.Models
 {
@@ -28,24 +28,24 @@ namespace Projekt.Models
             MD = 6,
             MP = 7,
         }
+        [Required(ErrorMessage = "Schoolclass is required.")]
         public Schoolclasses Schoolclass { get; private set; }
+        [Required(ErrorMessage = "Track is required.")]
         public Tracks Track {  get; private set; }
         public Student(string firstName, string lastName, DateTime birthdate, Genders gender, Schoolclasses schoolclass, Tracks track) : base(firstName, lastName, birthdate, gender) 
         {
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
             Schoolclass = schoolclass;
-            Validator.ValidateEnumValue(track, nameof(track));
             Track = track;
         }
         protected Student() : base() { }
         public void ChangeSchoolclass(Schoolclasses schoolclass)
         {
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Utilities.Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
             Schoolclass = schoolclass;
         }
         public void ChangeTrack(Tracks track)
         {
-            Validator.ValidateEnumValue(track, nameof(track));
+            Utilities.Validator.ValidateEnumValue(track, nameof(track));
             Track = track;
         }
 

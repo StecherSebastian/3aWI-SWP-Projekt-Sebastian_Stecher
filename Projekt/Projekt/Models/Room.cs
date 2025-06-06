@@ -1,17 +1,19 @@
-﻿using Projekt.Utilities;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Projekt.Models
 {
     public class Room
     {
         public int ID { get; set; }
+        [Required(ErrorMessage = "Name is required.")]
+        [Length(2, 50, ErrorMessage = "Name has to be at least 3 Characters long up to a maximum of 50.")]
         public string Name { get; private set; }
+        [Required(ErrorMessage = "Size is required.")]
+        [Range(20, 100, ErrorMessage = "Room size has to be between 20 and 100.")]
         public int Size { get; private set; }
         public Room(string name, int size)
         {
-            Validator.ValidateString(name, nameof(name));
             Name = name;
-            ValidateSize(size);
             Size = size;
         }
         protected Room()
@@ -20,7 +22,7 @@ namespace Projekt.Models
         }
         public void ChangeName(string name)
         {
-            Validator.ValidateString(name, nameof(name));
+            Utilities.Validator.ValidateString(name, nameof(name));
             Name = name;
         }
         public void ChangeSize(int size)
