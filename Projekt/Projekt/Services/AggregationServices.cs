@@ -16,7 +16,7 @@ namespace Projekt.Services
             School? school = _Context.Schools
                 .Include(s => s.Classrooms)
                 .FirstOrDefault(s => s.ID == schoolID);
-            if (school == null) throw new KeyNotFoundException("´School not found.");
+            if (school == null) throw new KeyNotFoundException("School not found.");
             return school.CountClassrooms();
         }
         public List<(string, int)> GetClassroomsWithStudentCount(int schoolID)

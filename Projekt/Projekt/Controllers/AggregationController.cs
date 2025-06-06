@@ -23,6 +23,10 @@ namespace Projekt.Controllers
                 int count = _Services.CountClassroomsInSchool(schoolID);
                 return Ok(new { Count = count });
             }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
+            }
             catch (Exception ex)
             {
                 return HandleInternalError(ex);
@@ -35,6 +39,10 @@ namespace Projekt.Controllers
             {
                 List<(string, int)> classroomsWithStudentCount = _Services.GetClassroomsWithStudentCount(schoolID);
                 return Ok(classroomsWithStudentCount);
+            }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
             }
             catch (Exception ex)
             {
@@ -63,6 +71,7 @@ namespace Projekt.Controllers
         {
             try
             {
+                ValidateModelState();
                 int genderCounts = _Services.CountStudentsByGender(schoolID, request.Gender);
                 return Ok(genderCounts);
             }
@@ -102,6 +111,10 @@ namespace Projekt.Controllers
                 int count = _Services.CountStudentsInSchoolclassByGender(schoolID, request.Schoolclass, request.Gender);
                 return Ok(count);
             }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
+            }
             catch (Exception ex)
             {
                 return HandleInternalError(ex);
@@ -115,6 +128,10 @@ namespace Projekt.Controllers
                 ValidateModelState();
                 int count = _Services.CountStudentsInTrack(schoolID, request.Track);
                 return Ok(count);
+            }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
             }
             catch (Exception ex)
             {
@@ -130,6 +147,10 @@ namespace Projekt.Controllers
                 int count = _Services.CountStudentsInTrackByGender(schoolID, request.Track, request.Gender);
                 return Ok(new { Count = count });
             }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
+            }
             catch (Exception ex)
             {
                 return HandleInternalError(ex);
@@ -142,6 +163,10 @@ namespace Projekt.Controllers
             {
                 double averageAge = _Services.GetAverageAgeOfStudents(schoolID);
                 return Ok(averageAge);
+            }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
             }
             catch (Exception ex)
             {
@@ -157,6 +182,10 @@ namespace Projekt.Controllers
                 double genderPercentage = _Services.GetGenderPercentageInSchoolclass(schoolID, request.Gender, request.Schoolclass);
                 return Ok(genderPercentage);
             }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
+            }
             catch (Exception ex)
             {
                 return HandleInternalError(ex);
@@ -170,6 +199,10 @@ namespace Projekt.Controllers
                 ValidateModelState();
                 double percentage = _Services.GetGenderPercentageInTrack(schoolID, request.Gender, request.Track);
                 return Ok(percentage);
+            }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
             }
             catch (Exception ex)
             {

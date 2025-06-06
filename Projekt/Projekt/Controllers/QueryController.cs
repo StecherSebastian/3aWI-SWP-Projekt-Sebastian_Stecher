@@ -14,13 +14,17 @@ namespace Projekt.Controllers
         {
             _Services = services;
         }
-        [HttpGet("getClassroomsWithCynapInSchool/{schoolID:int}", Name = "GetClassroomsWithCynapInSchool")]
+        [HttpGet("schools/{schoolId:int}/classrooms/with-cynap", Name = "GetClassroomsWithCynapInSchool")]
         public IActionResult GetClassroomsWithCynapInSchool(int schoolID)
         {
             try
             {
                 List<string> classroomsWithCynap = _Services.GetClassroomsWithCynapInSchool(schoolID);
                 return Ok(classroomsWithCynap);
+            }
+            catch (KeyNotFoundException knfEx)
+            {
+                return NotFound(knfEx.Message);
             }
             catch (Exception ex)
             {

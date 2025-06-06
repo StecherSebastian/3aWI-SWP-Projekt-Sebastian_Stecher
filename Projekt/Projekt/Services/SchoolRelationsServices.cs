@@ -1,12 +1,13 @@
-﻿using Projekt.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Projekt.Models;
 using Projekt.Database;
 
 namespace Projekt.Services
 {
-    public class SchoolRelationServices
+    public class SchoolRelationsServices
     {
         private readonly ProjektDbContext _Context;
-        public SchoolRelationServices(ProjektDbContext context)
+        public SchoolRelationsServices(ProjektDbContext context)
         {
             _Context = context;
         }
@@ -27,7 +28,7 @@ namespace Projekt.Services
         }
         public void RemoveClassroomFromSchool(int schoolID, int classroomID)
         {
-            School? school = _Context.Schools.FirstOrDefault(s => s.ID == schoolID);
+            School? school = _Context.Schools.Include(s => s.Classrooms).FirstOrDefault(s => s.ID == schoolID);
             if (school == null)
             {
                 throw new KeyNotFoundException("School not found.");
@@ -42,7 +43,7 @@ namespace Projekt.Services
         }
         public void RemoveClassroomsFromSchool(int schoolID, List<int> classroomIDs)
         {
-            School? school = _Context.Schools.FirstOrDefault(s => s.ID == schoolID);
+            School? school = _Context.Schools.Include(s => s.Classrooms).FirstOrDefault(s => s.ID == schoolID);
             if (school == null)
             {
                 throw new KeyNotFoundException("School not found.");

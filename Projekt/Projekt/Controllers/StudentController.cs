@@ -68,7 +68,7 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{id:int}", Name = "DeleteStudent")]
+        [HttpDelete("{id:int}")]
         public IActionResult DeleteStudent(int id)
         {
             try
@@ -85,7 +85,7 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("deleteStudents", Name = "DeleteStudents")]
+        [HttpDelete]
         public IActionResult DeleteStudents([FromBody] DeleteStudentsRequest request)
         {
             try
@@ -99,7 +99,7 @@ namespace Projekt.Controllers
                 return HandleInternalError(ex);
             }
         }
-        [HttpPut("{studentID:int}", Name = "UpdateStudent")]
+        [HttpPut("{studentID:int}")]
         public IActionResult UpdateStudent(int studentID, [FromBody] UpdateStudentRequest request)
         {
             try

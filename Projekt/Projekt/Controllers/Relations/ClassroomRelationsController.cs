@@ -14,7 +14,7 @@ namespace Projekt.Controllers.Relations
         {
             _Services = services;
         }
-        [HttpPut("{classroomID:int}/student/{studentID:int}")]
+        [HttpPut("classroom/{classroomID:int}/student/{studentID:int}")]
         public IActionResult AddStudentsToClassroom(int studentID, int classroomID)
         {
             try
@@ -32,7 +32,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{classroomID:int}/student/{studentID:int}")]
+        [HttpDelete("classroom/{classroomID:int}/student/{studentID:int}")]
         public IActionResult RemoveStudentFromClassroom(int studentID, int classroomID)
         {
             try
@@ -49,7 +49,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{classroomID:int}/students")]
+        [HttpDelete("classroom/{classroomID:int}/students")]
         public IActionResult RemoveStudentsFromClassroom(int classroomID, [FromBody] RemoveStudentsFromClassroomRequest request)
         {
             try
@@ -66,7 +66,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{classroomID:int}/students/all", Name = "RemoveAllStudentsFromClassroom")]
+        [HttpDelete("classroom/{classroomID:int}/students/all", Name = "RemoveAllStudentsFromClassroom")]
         public IActionResult RemoveAllStudentsFromClassroom(int classroomID)
         {
             try

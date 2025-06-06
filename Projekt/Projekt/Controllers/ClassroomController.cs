@@ -28,7 +28,7 @@ namespace Projekt.Controllers
                 ValidateModelState();
                 Classroom classroom = _Services.CreateClassroom(request);
                 return CreatedAtRoute(
-                    routeName: "GetSchoolById",
+                    routeName: "GetClassroom",
                     routeValues: new { id = classroom.ID },
                     value: classroom.Name
                 );

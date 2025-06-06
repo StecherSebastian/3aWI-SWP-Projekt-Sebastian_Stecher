@@ -6,10 +6,10 @@ using Projekt.DTO.Requests.Update;
 
 namespace Projekt.Services
 {
-    public class SchoolService
+    public class SchoolServices
     {
         private readonly ProjektDbContext _Context;
-        public SchoolService(ProjektDbContext context)
+        public SchoolServices(ProjektDbContext context)
         {
             _Context = context;
         }

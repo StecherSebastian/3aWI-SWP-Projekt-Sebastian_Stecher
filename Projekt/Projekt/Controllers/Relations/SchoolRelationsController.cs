@@ -8,12 +8,12 @@ namespace Projekt.Controllers.Relations
     [Route("api/[controller]")]
     public class SchoolRelationsController : BaseController
     {
-        private readonly SchoolRelationServices _Service;
-        public SchoolRelationsController(SchoolRelationServices service) : base()
+        private readonly SchoolRelationsServices _Service;
+        public SchoolRelationsController(SchoolRelationsServices service) : base()
         {
             _Service = service;
         }
-        [HttpPut("{schoolID:int}/classroom/{classroomID:int}")]
+        [HttpPut("school/{schoolID:int}/classroom/{classroomID:int}")]
         public IActionResult AddClassroomToSchool(int classroomID, int schoolID)
         {
             try
@@ -30,7 +30,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{schoolID:int}/classroom/{classroomID:int}")]
+        [HttpDelete("school/{schoolID:int}/classroom/{classroomID:int}")]
         public IActionResult RemoveClassroomFromSchool(int classroomID, int schoolID)
         {
             try
@@ -47,8 +47,8 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{schoolID:int}/classrooms")]
-        public IActionResult RemoveClassroomsFromSchool([FromBody] RemoveClassroomsFromSchoolRequest request, int schoolID)
+        [HttpDelete("school/{schoolID:int}/classrooms")]
+        public IActionResult RemoveClassroomsFromSchool(int schoolID, [FromBody] RemoveClassroomsFromSchoolRequest request)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{schoolID:int}/classrooms/all", Name = "RemoveAllClassroomsFromSchool")]
+        [HttpDelete("school/{schoolID:int}/classrooms/all")]
         public IActionResult RemoveAllClassroomsFromSchool(int schoolID)
         {
             try
@@ -82,7 +82,7 @@ namespace Projekt.Controllers.Relations
             }
         }
 
-        [HttpPut("{schoolID:int}/student/{studentID:int}")]
+        [HttpPut("school/{schoolID:int}/student/{studentID:int}")]
         public IActionResult AddStudentToSchool(int studentID, int schoolID)
         {
             try
@@ -99,7 +99,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{schoolID:int}/student/{studentID:int}")]
+        [HttpDelete("school/{schoolID:int}/student/{studentID:int}")]
         public IActionResult RemoveStudentFromSchool(int studentID, int schoolID)
         {
             try
@@ -116,7 +116,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{schoolID:int}/students", Name = "RemoveStudentsFromSchool")]
+        [HttpDelete("school/{schoolID:int}/students")]
         public IActionResult RemoveStudentsFromSchool([FromBody] RemoveStudentsFromSchoolRequest request, int schoolID)
         {
             try
@@ -133,7 +133,7 @@ namespace Projekt.Controllers.Relations
                 return HandleInternalError(ex);
             }
         }
-        [HttpDelete("{schoolID:int}/students/all", Name = "RemoveAllStudentsFromSchool")]
+        [HttpDelete("school/{schoolID:int}/students/all")]
         public IActionResult RemoveAllStudentsFromSchool(int schoolID)
         {
             try

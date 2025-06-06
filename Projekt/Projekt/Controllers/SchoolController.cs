@@ -11,9 +11,9 @@ namespace Projekt.Controllers
     [Route("api/[controller]")]
     public class SchoolController : BaseController
     {
-        private readonly SchoolService _Service;
+        private readonly SchoolServices _Service;
 
-        public SchoolController(SchoolService service) : base()
+        public SchoolController(SchoolServices service) : base()
         {
             _Service = service;
         }
@@ -93,7 +93,7 @@ namespace Projekt.Controllers
             {
                 ValidateModelState();
                 _Service.DeleteSchools(request.SchoolIDs);
-                return Ok();
+                return Ok("Schools deleted successfully.");
             }
             catch (Exception ex)
             {
