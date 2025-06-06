@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class Student : Person
     {
@@ -28,11 +26,9 @@ namespace Projekt.Models
             MD = 6,
             MP = 7,
         }
-        [Required(ErrorMessage = "Schoolclass is required.")]
-        public Schoolclasses Schoolclass { get; private set; }
-        [Required(ErrorMessage = "Track is required.")]
-        public Tracks Track {  get; private set; }
-        public Student(string firstName, string lastName, DateTime birthdate, Genders gender, Schoolclasses schoolclass, Tracks track) : base(firstName, lastName, birthdate, gender) 
+        public Schoolclasses? Schoolclass { get; private set; }
+        public Tracks? Track {  get; private set; }
+        public Student(string? firstName, string? lastName, DateTime? birthdate, Genders? gender, Schoolclasses? schoolclass, Tracks? track) : base(firstName, lastName, birthdate, gender) 
         {
             Schoolclass = schoolclass;
             Track = track;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Projekt.Utilities;
 using Projekt.Models;
 using Projekt.Services;
 
@@ -9,7 +10,7 @@ namespace Projekt.Controllers
     public class ClassroomController : BaseController
     {
         private readonly ClassroomServices _Services;
-        public ClassroomController(ClassroomServices services) : base() 
+        public ClassroomController(ClassroomServices services) : base()
         {
             _Services = services;
         }
@@ -18,7 +19,7 @@ namespace Projekt.Controllers
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateClassroomRequest(request);
                 Classroom classroom = _Services.CreateClassroom(request);
                 return CreatedAtRoute(
                     routeName: "GetClassroom",
@@ -26,7 +27,7 @@ namespace Projekt.Controllers
                     value: classroom.Name
                 );
             }
-            catch (ArgumentException aEx)
+            catch (AggregateException aEx)
             {
                 return BadRequest(aEx.Message);
             }
@@ -97,10 +98,11 @@ namespace Projekt.Controllers
             }
         }
         [HttpPut("{classroomID:int}")]
-        public IActionResult ChangeClassroomName(int classroomID, [FromBody] Classroom request)
+        public IActionResult UpdateClassroom(int classroomID, [FromBody] Classroom request)
         {
             try
             {
+                Validator.ValidateClassroomRequest(request);
                 Classroom classroom = _Services.UpdateClassroom(classroomID, request);
                 return Ok(classroom);
             }
@@ -109,6 +111,10 @@ namespace Projekt.Controllers
                 return NotFound(knfEx.Message);
             }
             catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
+            }
+            catch (AggregateException aEx)
             {
                 return BadRequest(aEx.Message);
             }

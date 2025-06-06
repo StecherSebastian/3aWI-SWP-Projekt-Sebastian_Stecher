@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Projekt.Utilities;
 using Projekt.Services;
 using Projekt.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Projekt.Controllers
 {
@@ -19,13 +19,17 @@ namespace Projekt.Controllers
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateStudentRequest(request);
                 Student student = _Services.CreateStudent(request);
                 return CreatedAtRoute(
                     routeName: "GetStudent",
                     routeValues: new { id = student.ID },
                     value: student.FirstName
                 );
+            }
+            catch (AggregateException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (ArgumentException aEx)
             {
@@ -88,7 +92,6 @@ namespace Projekt.Controllers
         {
             try
             {
-                ValidateModelState();
                 _Services.DeleteStudents(studentIDs);
                 return Ok("Students deleted successfully.");
             }
@@ -102,13 +105,17 @@ namespace Projekt.Controllers
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateStudentRequest(request);
                 Student student = _Services.UpdateStudent(studentID, request);
                 return Ok(student);
             }
             catch (KeyNotFoundException knfEx)
             {
                 return NotFound(knfEx.Message);
+            }
+            catch (AggregateException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (ArgumentException aEx)
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Projekt.Utilities;
 using Projekt.Models;
 using Projekt.Services;
 
@@ -19,7 +20,7 @@ namespace Projekt.Controllers
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateString(request.Name, nameof(request.Name));
                 School school = _Service.CreateSchool(request);
                 return CreatedAtRoute(
                     routeName: "GetSchool",
@@ -106,7 +107,7 @@ namespace Projekt.Controllers
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateString(request.Name, nameof(request.Name));
                 School? school = _Service.UpdateSchool(id, request);
                 return Ok(school);
             }

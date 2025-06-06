@@ -1,28 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class Person
     {
         public int ID { get; set; }
-        [Required(ErrorMessage = "FirstName is required.")]
-        [Length(2, 50, ErrorMessage = "FirstName has to be at least 3 Characters long up to a maximum of 50.")]
-        public string FirstName { get; private set; }
-        [Required(ErrorMessage = "LastName is required.")]
-        [Length(2, 50, ErrorMessage = "LastName has to be at least 3 Characters long up to a maximum of 50.")]
-        public string LastName { get; private set; }
-        [Required(ErrorMessage = "BirthDate is required.")]
-        public DateTime BirthDate { get; private set; }
-        public int Age { get { return DateTime.Now.Year - BirthDate.Year; } }
+        public string? FirstName { get; private set; }
+        public string? LastName { get; private set; }
+        public DateTime? BirthDate { get; private set; }
+        public int Age
+        {
+            get
+            {
+                int year = 0;
+                if (BirthDate.HasValue)
+                {
+                    year = BirthDate.Value.Year;
+                }
+                return DateTime.Now.Year - year;
+            }
+        }
+
         public enum Genders
         {
             m = 0,
             w = 1,
             d = 2
         }
-        [Required(ErrorMessage = "Gender is required.")]
-        public Genders Gender { get; private set; }
-        public Person(string firstName, string lastName, DateTime birthdate, Genders gender)
+        public Genders? Gender { get; private set; }
+        protected Person(string? firstName, string? lastName, DateTime? birthdate, Genders? gender)
         {
             FirstName = firstName;
             LastName = lastName;

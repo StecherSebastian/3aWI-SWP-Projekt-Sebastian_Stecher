@@ -1,16 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class Classroom : Room
     {
-        [Required(ErrorMessage = "Seats is required.")]
-        [Range(0, 75, ErrorMessage = "Number of Seats has to be between 0-75 and also only be a maximum of 75% of room size.")]
-        public int Seats { get; private set; }
-        [Required(ErrorMessage = "Cynap is required.")]
-        public bool Cynap { get; private set; }
+        public int? Seats { get; private set; } = null!;
+        public bool? Cynap { get; private set; } = null!;
         public List<Student> Students { get; private set; } = new List<Student>();
-        public Classroom(string name, int size, int seats, bool cynap) : base(name, size)
+        public Classroom(string? name, int? size, int? seats, bool? cynap) : base(name, size)
         {
             Seats = seats;
             Cynap = cynap;

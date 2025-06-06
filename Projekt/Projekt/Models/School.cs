@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class School
     {
         public int ID { get; set; }
-        [Required(ErrorMessage = "Name is required.")]
-        [Length(2, 50, ErrorMessage = "Name has to be at least 3 Characters long up to a maximum of 50.")]
-        public string Name { get; private set; } = null!;
+        public string? Name { get; private set; } = null!;
         public List<Classroom> Classrooms { get; private set; } = new List<Classroom>();
         public List<Student> Students { get; private set; } = new List<Student>();
         public School(string name)
@@ -115,7 +111,8 @@ namespace Projekt.Models
         }
         public List<string> GetClassroomsWithCynap()
         {
-            return Classrooms.Where(x => x.Cynap).Select(x => x.Name).ToList();
+
+            return Classrooms.Where(x => (bool)x.Cynap).Select(x => x.Name).ToList();
         }
         public List<(string, int)> GetClassroomsWithStudentCount()
         {

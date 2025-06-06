@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Projekt.Models;
 using Projekt.Database;
-using Projekt.Utilities;
 
 namespace Projekt.Services
 {
@@ -14,8 +13,6 @@ namespace Projekt.Services
         }
         public Classroom CreateClassroom(Classroom request)
         {
-            Validator.ValidateString(request.Name, "ClassroomName");
-            Validator.ValidNumberOfSeats(request.Size, request.Seats);
             Classroom classroom = new Classroom(request.Name, request.Size, request.Seats, request.Cynap);
             _Context.Classrooms.Add(classroom);
             _Context.SaveChanges();
@@ -46,14 +43,12 @@ namespace Projekt.Services
         }
         public Classroom UpdateClassroom(int id, Classroom request)
         {
-            Validator.ValidateString(request.Name, "ClassroomName");
-            Validator.ValidNumberOfSeats(request.Size, request.Seats);
             Classroom? classroom = _Context.Classrooms.FirstOrDefault(c => c.ID == id);
             if (classroom == null) throw new KeyNotFoundException("Classroom not found");
             classroom.ChangeName(request.Name);
-            classroom.ChangeSize(request.Size);
-            classroom.ChangeSeatsCount(request.Seats);
-            classroom.ChangeCynap(request.Cynap);
+            classroom.ChangeSize((int)request.Size);
+            classroom.ChangeSeatsCount((int)request.Seats);
+            classroom.ChangeCynap((bool)request.Cynap);
             _Context.SaveChanges();
             return classroom;
         }
