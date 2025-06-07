@@ -8,7 +8,7 @@ namespace Projekt.Controllers
     public class QueryController : BaseController
     {
         private readonly QueryServices _Services;
-        public QueryController(QueryServices services) : base() 
+        public QueryController(QueryServices services) : base()
         {
             _Services = services;
         }

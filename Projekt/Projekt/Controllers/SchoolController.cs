@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Projekt.DTO.Requests.Create;
-using Projekt.DTO.Requests.Delete;
-using Projekt.DTO.Requests.Update;
+using Projekt.Utilities;
 using Projekt.Models;
 using Projekt.Services;
 
@@ -18,17 +16,21 @@ namespace Projekt.Controllers
             _Service = service;
         }
         [HttpPost]
-        public IActionResult CreateSchool([FromBody] CreateSchoolRequest request)
+        public IActionResult CreateSchool([FromBody] School request)
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateString(request.Name, nameof(request.Name));
                 School school = _Service.CreateSchool(request);
                 return CreatedAtRoute(
                     routeName: "GetSchool",
                     routeValues: new { id = school.ID },
                     value: school.Name
                 );
+            }
+            catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (Exception ex)
             {
@@ -87,12 +89,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpDelete]
-        public IActionResult DeleteSchools([FromBody] DeleteSchoolsRequest request)
+        public IActionResult DeleteSchools([FromBody] List<int> schoolIDs)
         {
             try
             {
                 ValidateModelState();
-                _Service.DeleteSchools(request.SchoolIDs);
+                _Service.DeleteSchools(schoolIDs);
                 return Ok("Schools deleted successfully.");
             }
             catch (Exception ex)
@@ -101,17 +103,21 @@ namespace Projekt.Controllers
             }
         }
         [HttpPut("{id:int}")]
-        public IActionResult UpdateSchool([FromBody] UpdateSchoolRequest request, int id)
+        public IActionResult UpdateSchool(int id, [FromBody] School request)
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateString(request.Name, nameof(request.Name));
                 School? school = _Service.UpdateSchool(id, request);
                 return Ok(school);
             }
             catch (KeyNotFoundException knfEx)
             {
                 return NotFound(knfEx.Message);
+            }
+            catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (Exception ex)
             {

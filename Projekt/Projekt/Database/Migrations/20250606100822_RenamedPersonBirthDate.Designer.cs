@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekt.Database;
 
@@ -10,9 +11,11 @@ using Projekt.Database;
 namespace Projekt.Database.Migrations
 {
     [DbContext(typeof(ProjektDbContext))]
-    partial class ProjektDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250606100822_RenamedPersonBirthDate")]
+    partial class RenamedPersonBirthDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
@@ -23,19 +26,20 @@ namespace Projekt.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool?>("Cynap")
+                    b.Property<bool>("Cynap")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("SchoolID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Seats")
+                    b.Property<int>("Seats")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Size")
+                    b.Property<int>("Size")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
@@ -52,6 +56,7 @@ namespace Projekt.Database.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
@@ -65,28 +70,30 @@ namespace Projekt.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("BirthDate")
+                    b.Property<DateTime>("BirthDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("ClassroomID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("Gender")
+                    b.Property<int>("Gender")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("SchoolID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Schoolclass")
+                    b.Property<int>("Schoolclass")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Track")
+                    b.Property<int>("Track")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");

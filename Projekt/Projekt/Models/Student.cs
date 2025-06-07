@@ -1,6 +1,4 @@
-﻿using Projekt.Utilities;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class Student : Person
     {
@@ -28,24 +26,22 @@ namespace Projekt.Models
             MD = 6,
             MP = 7,
         }
-        public Schoolclasses Schoolclass { get; private set; }
-        public Tracks Track {  get; private set; }
-        public Student(string firstName, string lastName, DateTime birthdate, Genders gender, Schoolclasses schoolclass, Tracks track) : base(firstName, lastName, birthdate, gender) 
+        public Schoolclasses? Schoolclass { get; private set; }
+        public Tracks? Track {  get; private set; }
+        public Student(string? firstName, string? lastName, DateTime? birthdate, Genders? gender, Schoolclasses? schoolclass, Tracks? track) : base(firstName, lastName, birthdate, gender) 
         {
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
             Schoolclass = schoolclass;
-            Validator.ValidateEnumValue(track, nameof(track));
             Track = track;
         }
         protected Student() : base() { }
         public void ChangeSchoolclass(Schoolclasses schoolclass)
         {
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Utilities.Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
             Schoolclass = schoolclass;
         }
         public void ChangeTrack(Tracks track)
         {
-            Validator.ValidateEnumValue(track, nameof(track));
+            Utilities.Validator.ValidateEnumValue(track, nameof(track));
             Track = track;
         }
 

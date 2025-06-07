@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Projekt.Utilities;
 using Projekt.Services;
-using Projekt.DTO.Requests.Create;
-using Projekt.DTO.Requests.Delete;
-using Projekt.DTO.Requests.Update;
 using Projekt.Models;
 
 namespace Projekt.Controllers
@@ -17,17 +15,21 @@ namespace Projekt.Controllers
             _Services = services;
         }
         [HttpPost]
-        public IActionResult CreateStudent([FromBody] CreateStudentRequest request)
+        public IActionResult CreateStudent([FromBody] Student request)
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateStudentRequest(request);
                 Student student = _Services.CreateStudent(request);
                 return CreatedAtRoute(
                     routeName: "GetStudent",
                     routeValues: new { id = student.ID },
                     value: student.FirstName
                 );
+            }
+            catch (AggregateException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (ArgumentException aEx)
             {
@@ -86,12 +88,11 @@ namespace Projekt.Controllers
             }
         }
         [HttpDelete]
-        public IActionResult DeleteStudents([FromBody] DeleteStudentsRequest request)
+        public IActionResult DeleteStudents([FromBody] List<int> studentIDs)
         {
             try
             {
-                ValidateModelState();
-                _Services.DeleteStudents(request.StudentIDs);
+                _Services.DeleteStudents(studentIDs);
                 return Ok("Students deleted successfully.");
             }
             catch (Exception ex)
@@ -100,17 +101,21 @@ namespace Projekt.Controllers
             }
         }
         [HttpPut("{studentID:int}")]
-        public IActionResult UpdateStudent(int studentID, [FromBody] UpdateStudentRequest request)
+        public IActionResult UpdateStudent(int studentID, [FromBody] Student request)
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateStudentRequest(request);
                 Student student = _Services.UpdateStudent(studentID, request);
                 return Ok(student);
             }
             catch (KeyNotFoundException knfEx)
             {
                 return NotFound(knfEx.Message);
+            }
+            catch (AggregateException aEx)
+            {
+                return BadRequest(aEx.Message);
             }
             catch (ArgumentException aEx)
             {

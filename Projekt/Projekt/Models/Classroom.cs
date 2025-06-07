@@ -1,22 +1,19 @@
-﻿using Projekt.Utilities;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class Classroom : Room
     {
-        public int Seats { get; private set; }
-        public bool Cynap { get; private set; }
+        public int? Seats { get; private set; } = null!;
+        public bool? Cynap { get; private set; } = null!;
         public List<Student> Students { get; private set; } = new List<Student>();
-        public Classroom(string name, int size, int seats, bool cynap) : base(name, size)
+        public Classroom(string? name, int? size, int? seats, bool? cynap) : base(name, size)
         {
-            Validator.ValidNumberOfSeats(size, seats);
             Seats = seats;
             Cynap = cynap;
         }
         protected Classroom() : base() { }
         public void ChangeSeatsCount(int seats)
         {
-            Validator.ValidNumberOfSeats(Size, seats);
+            Utilities.Validator.ValidNumberOfSeats(Size, seats);
             Seats = seats;
         }
         public void ChangeCynap(bool cynap)

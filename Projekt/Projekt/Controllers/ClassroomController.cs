@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Projekt.DTO.Requests.Create;
-using Projekt.DTO.Requests.Delete;
+using Projekt.Utilities;
 using Projekt.Models;
-using Projekt.DTO.Requests.Update;
 using Projekt.Services;
 
 namespace Projekt.Controllers
@@ -12,16 +10,16 @@ namespace Projekt.Controllers
     public class ClassroomController : BaseController
     {
         private readonly ClassroomServices _Services;
-        public ClassroomController(ClassroomServices services) : base() 
+        public ClassroomController(ClassroomServices services) : base()
         {
             _Services = services;
         }
         [HttpPost]
-        public IActionResult CreateClassroom([FromBody] CreateClassroomRequest request)
+        public IActionResult CreateClassroom([FromBody] Classroom request)
         {
             try
             {
-                ValidateModelState();
+                Validator.ValidateClassroomRequest(request);
                 Classroom classroom = _Services.CreateClassroom(request);
                 return CreatedAtRoute(
                     routeName: "GetClassroom",
@@ -29,7 +27,7 @@ namespace Projekt.Controllers
                     value: classroom.Name
                 );
             }
-            catch (ArgumentException aEx)
+            catch (AggregateException aEx)
             {
                 return BadRequest(aEx.Message);
             }
@@ -86,12 +84,12 @@ namespace Projekt.Controllers
             }
         }
         [HttpDelete]
-        public IActionResult DeleteClassrooms([FromBody] DeleteClassroomsRequest request)
+        public IActionResult DeleteClassrooms([FromBody] List<int> request)
         {
             try
             {
                 ValidateModelState();
-                _Services.DeletClassrooms(request.ClassroomIDs);
+                _Services.DeletClassrooms(request);
                 return Ok("Classrooms deleted successfully.");
             }
             catch (Exception ex)
@@ -100,10 +98,11 @@ namespace Projekt.Controllers
             }
         }
         [HttpPut("{classroomID:int}")]
-        public IActionResult ChangeClassroomName(int classroomID, [FromBody] UpdateClassroomRequest request)
+        public IActionResult UpdateClassroom(int classroomID, [FromBody] Classroom request)
         {
             try
             {
+                Validator.ValidateClassroomRequest(request);
                 Classroom classroom = _Services.UpdateClassroom(classroomID, request);
                 return Ok(classroom);
             }
@@ -112,6 +111,10 @@ namespace Projekt.Controllers
                 return NotFound(knfEx.Message);
             }
             catch (ArgumentException aEx)
+            {
+                return BadRequest(aEx.Message);
+            }
+            catch (AggregateException aEx)
             {
                 return BadRequest(aEx.Message);
             }
