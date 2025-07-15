@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt.Services;
-using Projekt.DTO.Requests.Relations;
 
 namespace Projekt.Controllers.Relations
 {
@@ -48,11 +47,11 @@ namespace Projekt.Controllers.Relations
             }
         }
         [HttpDelete("classroom/{classroomID:int}/students")]
-        public IActionResult RemoveStudentsFromClassroom(int classroomID, [FromBody] RemoveStudentsFromClassroomRequest request)
+        public IActionResult RemoveStudentsFromClassroom(int classroomID, [FromBody] List<int> studentIDs)
         {
             try
             {
-                _Services.RemoveStudentsFromClassroom(classroomID, request.StudentIDs);
+                _Services.RemoveStudentsFromClassroom(classroomID, studentIDs);
                 return Ok("Students removed from Classroom successfully.");
             }
             catch (KeyNotFoundException knfEx)

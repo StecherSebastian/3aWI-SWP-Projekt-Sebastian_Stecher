@@ -23,20 +23,19 @@ namespace Projekt.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Cynap")
+                    b.Property<bool?>("Cynap")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("SchoolID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Seats")
+                    b.Property<int?>("Seats")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Size")
+                    b.Property<int?>("Size")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
@@ -53,7 +52,6 @@ namespace Projekt.Database.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
@@ -67,30 +65,28 @@ namespace Projekt.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("Birthdate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("ClassroomID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Gender")
+                    b.Property<int?>("Gender")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("SchoolID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Schoolclass")
+                    b.Property<int?>("Schoolclass")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Track")
+                    b.Property<int?>("Track")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");

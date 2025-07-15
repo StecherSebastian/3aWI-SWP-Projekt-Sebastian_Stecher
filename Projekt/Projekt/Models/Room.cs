@@ -1,17 +1,13 @@
-﻿using Projekt.Utilities;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class Room
     {
         public int ID { get; set; }
-        public string Name { get; private set; }
-        public int Size { get; private set; }
-        public Room(string name, int size)
+        public string? Name { get; private set; } = null!;
+        public int? Size { get; private set; } = null!;
+        protected Room(string? name, int? size)
         {
-            Validator.ValidateString(name, nameof(name));
             Name = name;
-            ValidateSize(size);
             Size = size;
         }
         protected Room()
@@ -20,7 +16,7 @@ namespace Projekt.Models
         }
         public void ChangeName(string name)
         {
-            Validator.ValidateString(name, nameof(name));
+            Utilities.Validator.ValidateString(name, nameof(name));
             Name = name;
         }
         public void ChangeSize(int size)

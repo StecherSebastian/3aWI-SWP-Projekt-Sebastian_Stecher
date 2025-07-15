@@ -1,25 +1,19 @@
-﻿using Projekt.Utilities;
-
-namespace Projekt.Models
+﻿namespace Projekt.Models
 {
     public class School
     {
         public int ID { get; set; }
-        public string Name { get; private set; }
+        public string? Name { get; private set; } = null!;
         public List<Classroom> Classrooms { get; private set; } = new List<Classroom>();
         public List<Student> Students { get; private set; } = new List<Student>();
         public School(string name)
         {
-            Validator.ValidateString(name, nameof(name));
             Name = name;
         }
-        protected School()
-        {
-            Name = "Default School";
-        }
+        protected School() {}
         public void ChangeName(string name)
         {
-            Validator.ValidateString(name, nameof(name));
+            Utilities.Validator.ValidateString(name, nameof(name));
             Name = name;
         }
         public void AddStudent(Student student)
@@ -64,29 +58,29 @@ namespace Projekt.Models
         }
         public int CountStudentsByGender(Person.Genders gender)
         {
-            Validator.ValidateEnumValue(gender, nameof(gender));
+            Utilities.Validator.ValidateEnumValue(gender, nameof(gender));
             return Students.Where(x => x.Gender == gender).Count();
         }
         public int CountStudentsBySchoolclass(Student.Schoolclasses schoolclass)
         {
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Utilities.Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
             return Students.Where(x => x.Schoolclass == schoolclass).Count();
         }
         public int CountStudentsInSchoolclassByGender(Student.Schoolclasses schoolclass, Person.Genders gender)
         {
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
-            Validator.ValidateEnumValue(gender, nameof(gender));
+            Utilities.Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Utilities.Validator.ValidateEnumValue(gender, nameof(gender));
             return Students.Where(x => x.Schoolclass == schoolclass && x.Gender == gender).Count();
         }
         public int CountStudentsByTrack(Student.Tracks track)
         {
-            Validator.ValidateEnumValue(track, nameof(track));
+            Utilities.Validator.ValidateEnumValue(track, nameof(track));
             return Students.Where(x => x.Track == track).Count();
         }
         public int CountStudentsInTrackByGender(Student.Tracks track, Person.Genders gender)
         {
-            Validator.ValidateEnumValue(track, nameof(track));
-            Validator.ValidateEnumValue(gender, nameof(gender));
+            Utilities.Validator.ValidateEnumValue(track, nameof(track));
+            Utilities.Validator.ValidateEnumValue(gender, nameof(gender));
             return Students.Where(x => x.Track == track && x.Gender == gender).Count();
         }
         public double GetAverageAgeOfStudents()
@@ -99,15 +93,15 @@ namespace Projekt.Models
         }
         public double GetGenderPercentageInSchoolclass(Person.Genders gender, Student.Schoolclasses schoolclass)
         {
-            Validator.ValidateEnumValue(gender, nameof(gender));
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Utilities.Validator.ValidateEnumValue(gender, nameof(gender));
+            Utilities.Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
             int numberOfStudents = CountStudentsBySchoolclass(schoolclass);
             return numberOfStudents == 0 ? 0 : Math.Round((double)CountStudentsInSchoolclassByGender(schoolclass, gender) / numberOfStudents * 100, 2);
         }
         public double GetGenderPercentageInTrack(Person.Genders gender, Student.Tracks track)
         {
-            Validator.ValidateEnumValue(gender, nameof(gender));
-            Validator.ValidateEnumValue(track, nameof(track));
+            Utilities.Validator.ValidateEnumValue(gender, nameof(gender));
+            Utilities.Validator.ValidateEnumValue(track, nameof(track));
             int numberOfStudents = CountStudentsByTrack(track);
             return numberOfStudents == 0 ? 0 : Math.Round((double)CountStudentsInTrackByGender(track, gender) / numberOfStudents * 100, 2);
         }
@@ -117,7 +111,8 @@ namespace Projekt.Models
         }
         public List<string> GetClassroomsWithCynap()
         {
-            return Classrooms.Where(x => x.Cynap).Select(x => x.Name).ToList();
+
+            return Classrooms.Where(x => (bool)x.Cynap).Select(x => x.Name).ToList();
         }
         public List<(string, int)> GetClassroomsWithStudentCount()
         {
@@ -126,7 +121,7 @@ namespace Projekt.Models
         public bool IsClassroomBigEnough(Classroom classroom, Student.Schoolclasses schoolclass)
         {
             ArgumentNullException.ThrowIfNull(classroom);
-            Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
+            Utilities.Validator.ValidateEnumValue(schoolclass, nameof(schoolclass));
             return CountStudentsBySchoolclass(schoolclass) <= classroom.Seats;
         }
     }
